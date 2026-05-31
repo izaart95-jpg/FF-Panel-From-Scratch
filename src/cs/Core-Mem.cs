@@ -6,17 +6,22 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace SniperFix
+// This is a Memory Manager which scans game's code and replaces with patched code
+// In This case the originalByte is the memory which is executed whenever player opens scope of sniper
+// Then the patched bytes contains 2 modifications those 2 mods are of normal guns where the scope auto sticks to player
+// by adding normal gun bytes to sniper this code works 
+
+namespace MemoryMain
 {
     class Program
     {
-        static string originalBytes = "9A 99 99 3E FF FF FF FF 08 00 00 00 00 00 60 40 CD CC 8C 3F 8F C2 F5 3C CD CC CC 3D 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 80 3F 33 33 13 40 00 00 B0 3F 00 00 80 3F 01";
-        static string patchedBytes = "9A 99 99 3E FF FF FF FF 08 00 00 00 00 00 60 40 CD CC 8C 3F 8F C2 F5 3C CD CC CC 3D 06 00 00 00 00 00 19 3F 00 00 00 00 00 00 00 00 00 00 00 00 00 00 80 3F 33 33 13 40 00 00 B0 3F 00 00 80 3F 01";
+        static string originalBytes = "9A 99 99 3E FF FF FF FF 08 00 00 00 00 00 60 40 CD CC 8C 3F 8F C2 F5 3C CD CC CC 3D 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 80 3F 33 33 13 40 00 00 B0 3F 00 00 80 3F 01";   // Array of Bytes To Scan
+        static string patchedBytes = "9A 99 99 3E FF FF FF FF 08 00 00 00 00 00 60 40 CD CC 8C 3F 8F C2 F5 3C CD CC CC 3D 06 00 00 00 00 00 19 3F 00 00 00 00 00 00 00 00 00 00 00 00 00 00 80 3F 33 33 13 40 00 00 B0 3F 00 00 80 3F 01"; // AoB to replace
         static INTERNAL mem = new INTERNAL();
 
         static void Main(string[] args)
         {
-            Console.WriteLine("SniperFix Console (64-bit)");
+            Console.WriteLine("CSHARP Console (64-bit)");
             Console.WriteLine("Commands: pid <id> | name <exe> | inject | exit");
 
             while (true)
