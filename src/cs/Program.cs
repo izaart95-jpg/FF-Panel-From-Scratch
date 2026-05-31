@@ -7,7 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace FastMemory
+namespace MainMem
 {
     class Program
     {
@@ -17,7 +17,7 @@ namespace FastMemory
 
         static void Main(string[] args)
         {
-            Console.WriteLine("FastMem Console (64-bit)");
+            Console.WriteLine("CSHARP Console (64-bit)");
             Console.WriteLine("Commands: pid <id> | name <exe> | inject | exit");
 
             while (true)
