@@ -1,0 +1,1645 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevPanel Guide — Universal Development Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;600;700&family=PT+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#111111;--secondary:#8B5CF6;--success:#16A34A;--warning:#D97706;--danger:#DC2626;
+  --surface:#FFFFFF;--surface2:#F9FAFB;--surface3:#F3F4F6;--text:#111827;--text2:#6B7280;
+  --border:#E5E7EB;--border2:#D1D5DB;
+  --radius-sm:4px;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;
+  --font-display:'Montserrat',sans-serif;--font-body:'Roboto',sans-serif;--font-mono:'PT Mono',monospace;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.05);--shadow-md:0 4px 6px -1px rgba(0,0,0,.07),0 2px 4px -2px rgba(0,0,0,.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,.08),0 4px 6px -4px rgba(0,0,0,.04);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);color:var(--text);background:var(--surface);line-height:1.7;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.018;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+::selection{background:rgba(139,92,246,.2);color:var(--primary)}
+a{color:var(--secondary);text-decoration:none}a:hover{text-decoration:underline}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-display);font-weight:700;line-height:1.3;color:var(--primary)}
+
+nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 32px}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}
+.nav-brand{font-family:var(--font-display);font-weight:800;font-size:1.15rem;color:var(--primary);display:flex;align-items:center;gap:8px;cursor:default}
+.nav-brand svg{width:22px;height:22px;color:var(--secondary)}
+.nav-links{display:flex;gap:4px}
+.nav-link{font-family:var(--font-body);font-weight:500;font-size:.9rem;padding:8px 16px;border-radius:var(--radius-md);cursor:pointer;color:var(--text2);transition:all .2s;border:none;background:none}
+.nav-link:hover{color:var(--primary);background:var(--surface3)}
+.nav-link.active{color:var(--secondary);background:rgba(139,92,246,.08);font-weight:600}
+.nav-link:focus-visible{outline:2px solid var(--secondary);outline-offset:2px}
+
+.page{display:none;max-width:1200px;margin:0 auto;padding:32px 24px 64px}
+.page.active{display:block;animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.disclaimer-banner{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:1px solid #F59E0B;border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:32px;display:flex;gap:12px;align-items:flex-start}
+.disclaimer-banner .icon{font-size:1.4rem;flex-shrink:0;margin-top:2px}
+.disclaimer-banner p{font-size:.88rem;color:#92400E;line-height:1.6}
+.disclaimer-banner strong{color:#78350F}
+
+.hero{padding:48px 0 40px;border-bottom:1px solid var(--border);margin-bottom:40px}
+.hero h1{font-size:2.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:8px}
+.hero h1 span{color:var(--secondary)}
+.hero p{font-size:1.05rem;color:var(--text2);max-width:640px;line-height:1.7}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;transition:all .2s}
+.card:hover{border-color:var(--border2);box-shadow:var(--shadow-md)}
+.card-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.card-icon{width:36px;height:36px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.card-icon.purple{background:rgba(139,92,246,.1);color:var(--secondary)}
+.card-icon.green{background:rgba(22,163,74,.1);color:var(--success)}
+.card-icon.orange{background:rgba(217,119,6,.1);color:var(--warning)}
+.card-icon.red{background:rgba(220,38,38,.1);color:var(--danger)}
+.card-icon.dark{background:rgba(17,17,17,.08);color:var(--primary)}
+.card h3{font-size:1rem;font-weight:700}
+.card p,.card ul{font-size:.88rem;color:var(--text2);line-height:1.65}
+.card ul{padding-left:18px;margin-top:6px}
+.card ul li{margin-bottom:3px}
+
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+@media(max-width:900px){.grid-3,.grid-4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+
+.section{margin-bottom:48px}
+.section-title{font-size:1.4rem;font-weight:800;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid var(--border)}
+.section-title .num{color:var(--secondary);font-weight:900;margin-right:8px}
+
+.meta-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:32px}
+.meta-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px 16px}
+.meta-label{font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:4px}
+.meta-value{font-weight:600;font-size:.92rem;color:var(--primary)}
+
+.toc{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:32px}
+.toc h3{font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);margin-bottom:12px;font-weight:700}
+.toc-list{list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+.toc-list a{font-size:.85rem;padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text);transition:all .15s;display:inline-block}
+.toc-list a:hover{border-color:var(--secondary);color:var(--secondary);text-decoration:none}
+
+.resource-card{display:flex;gap:16px;padding:20px}
+.resource-card .rc-num{font-family:var(--font-mono);font-size:.75rem;color:var(--text2);flex-shrink:0;margin-top:2px}
+.resource-card h3{font-size:1rem;margin-bottom:6px}
+.resource-card p{font-size:.85rem;color:var(--text2);line-height:1.65}
+.resource-tag{display:inline-block;font-family:var(--font-mono);font-size:.7rem;padding:2px 8px;border-radius:var(--radius-sm);background:rgba(139,92,246,.08);color:var(--secondary);margin-right:4px;margin-top:6px}
+.resource-bonus{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:var(--radius-sm);background:rgba(217,119,6,.08);color:var(--warning);margin-top:6px}
+.resource-link{display:inline-block;font-size:.8rem;font-weight:600;color:var(--secondary);margin-right:10px;margin-top:8px;text-decoration:none}
+.resource-link:hover{text-decoration:underline}
+
+.tut-header{margin-bottom:32px}
+.tut-note{background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.2);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:24px;font-size:.88rem;color:#5B21B6;line-height:1.6}
+
+.step-nav{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap}
+.step-btn{font-family:var(--font-display);font-weight:700;font-size:.85rem;padding:10px 20px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;transition:all .2s}
+.step-btn:hover{border-color:var(--secondary);color:var(--secondary)}
+.step-btn.active{background:var(--secondary);color:white;border-color:var(--secondary)}
+.step-btn.disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+.step-btn:focus-visible{outline:2px solid var(--secondary);outline-offset:2px}
+
+.lang-toggle{display:inline-flex;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:24px}
+.lang-btn{font-family:var(--font-mono);font-size:.82rem;font-weight:700;padding:8px 20px;border:none;cursor:pointer;background:var(--surface);color:var(--text2);transition:all .2s}
+.lang-btn:hover{background:var(--surface3)}
+.lang-btn.active{background:var(--primary);color:white}
+.lang-btn:focus-visible{outline:2px solid var(--secondary);outline-offset:-2px}
+
+.step-content{display:none}.step-content.active{display:block;animation:fadeUp .3s ease}
+.lang-content{display:none}.lang-content.active{display:block}
+
+.code-block{background:#1E1E2E;border-radius:var(--radius-lg);margin:16px 0;overflow:hidden}
+.code-header{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;background:rgba(0,0,0,.3);font-family:var(--font-mono);font-size:.72rem;color:#A6ADC8}
+.code-copy{font-family:var(--font-mono);font-size:.72rem;padding:3px 10px;border-radius:var(--radius-sm);background:rgba(255,255,255,.08);color:#A6ADC8;border:1px solid rgba(255,255,255,.1);cursor:pointer;transition:all .15s}
+.code-copy:hover{background:rgba(255,255,255,.15);color:white}
+.code-pre{padding:16px 20px;overflow-x:auto;font-family:var(--font-mono);font-size:.82rem;line-height:1.75;color:#CDD6F4}
+.code-pre .kw{color:#CBA6F7}.code-pre .fn{color:#89B4FA}.code-pre .str{color:#A6E3A1}.code-pre .cm{color:#6C7086;font-style:italic}.code-pre .num{color:#FAB387}.code-pre .type{color:#F9E2AF}.code-pre .dir{color:#F38BA8}
+
+.accordion{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin:16px 0}
+.acc-item{border-bottom:1px solid var(--border)}.acc-item:last-child{border-bottom:none}
+.acc-q{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;cursor:pointer;font-weight:600;font-size:.9rem;background:var(--surface2);transition:background .15s;gap:12px}
+.acc-q:hover{background:var(--surface3)}
+.acc-q .arrow{transition:transform .25s;font-size:.75rem;color:var(--text2);flex-shrink:0}
+.acc-item.open .acc-q .arrow{transform:rotate(180deg)}
+.acc-a{display:none;padding:16px 20px;font-size:.88rem;color:var(--text2);line-height:1.7;border-top:1px solid var(--border)}
+.acc-item.open .acc-a{display:block}
+
+.summary-box{background:linear-gradient(135deg,rgba(139,92,246,.04),rgba(139,92,246,.08));border:1px solid rgba(139,92,246,.15);border-radius:var(--radius-lg);padding:20px 24px;margin:24px 0}
+.summary-box h4{font-size:.85rem;text-transform:uppercase;letter-spacing:.04em;color:var(--secondary);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.summary-box ul{padding-left:18px;font-size:.88rem;color:var(--text2)}
+.summary-box li{margin-bottom:4px;line-height:1.6}
+
+.detail-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 24px;margin:16px 0}
+.detail-box h4{font-size:.92rem;margin-bottom:8px}
+.detail-box p,.detail-box ul{font-size:.86rem;color:var(--text2);line-height:1.7}
+.detail-box ul{padding-left:18px;margin-top:4px}
+
+.step-section{margin-bottom:36px}
+.step-section h3{font-size:1.15rem;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.step-section h4{font-size:.95rem;margin:16px 0 8px;color:var(--primary)}
+
+.info-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.85rem}
+.info-table th{text-align:left;padding:10px 14px;background:var(--surface3);font-weight:600;border:1px solid var(--border);font-size:.8rem;text-transform:uppercase;letter-spacing:.03em;color:var(--text2)}
+.info-table td{padding:10px 14px;border:1px solid var(--border);color:var(--text)}
+.info-table code{font-family:var(--font-mono);font-size:.8rem;background:var(--surface3);padding:1px 6px;border-radius:var(--radius-sm)}
+
+.note-box{display:flex;gap:10px;padding:14px 18px;border-radius:var(--radius-md);margin:16px 0;font-size:.86rem;line-height:1.6}
+.note-box.info{background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.15);color:#5B21B6}
+.note-box.warn{background:rgba(217,119,6,.06);border:1px solid rgba(217,119,6,.15);color:#92400E}
+.note-box.danger{background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.15);color:#991B1B}
+.note-box.success{background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.15);color:#166534}
+.note-box .ni{flex-shrink:0;font-size:1rem}
+
+.coming-soon{text-align:center;padding:80px 24px}
+.coming-soon h2{font-size:1.8rem;color:var(--text2);margin-bottom:12px}
+.coming-soon p{color:var(--text2);font-size:1rem}
+.coming-soon .cs-icon{font-size:3rem;margin-bottom:16px;opacity:.3}
+
+footer{background:var(--primary);color:rgba(255,255,255,.6);padding:32px 24px;text-align:center;font-size:.82rem;margin-top:48px}
+footer a{color:rgba(255,255,255,.8)}
+footer .footer-disclaimer{max-width:700px;margin:0 auto;line-height:1.7}
+
+.badge{display:inline-block;font-family:var(--font-mono);font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:var(--radius-sm);text-transform:uppercase;letter-spacing:.04em}
+.badge.purple{background:rgba(139,92,246,.1);color:var(--secondary)}
+.badge.green{background:rgba(22,163,74,.1);color:var(--success)}
+.badge.orange{background:rgba(217,119,6,.1);color:var(--warning)}
+.badge.red{background:rgba(220,38,38,.1);color:var(--danger)}
+
+.btn-primary{display:inline-block;font-family:var(--font-display);font-weight:600;font-size:.85rem;padding:10px 20px;border-radius:var(--radius-md);background:var(--secondary);color:white;border:none;cursor:pointer;transition:all .2s;text-decoration:none}
+.btn-primary:hover{background:#7C3AED;color:white;text-decoration:none}
+
+.placeholder-box{border:2px dashed var(--border2);border-radius:var(--radius-lg);padding:60px 20px;text-align:center;color:var(--text2);background:var(--surface2)}
+
+.subsection-divider{display:flex;align-items:center;gap:12px;margin:32px 0 20px;font-family:var(--font-display);font-weight:800;font-size:1.1rem;color:var(--primary)}
+.subsection-divider::after{content:'';flex:1;height:2px;background:var(--border)}
+.subsection-divider .emoji{font-size:1.2rem}
+
+.alt-badge{display:inline-block;font-family:var(--font-mono);font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:var(--radius-sm);background:rgba(139,92,246,.08);color:var(--secondary);margin-left:8px;vertical-align:middle}
+
+@media(max-width:768px){
+  .hero h1{font-size:1.7rem}
+  .page{padding:20px 16px 48px}
+  .meta-grid{grid-template-columns:repeat(2,1fr)}
+  .step-nav{gap:6px}
+  .step-btn{padding:8px 14px;font-size:.8rem}
+}
+@media(max-width:480px){
+  .meta-grid{grid-template-columns:1fr}
+  .nav-links{gap:2px}
+  .nav-link{padding:6px 10px;font-size:.82rem}
+}
+html{scroll-behavior:smooth}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      DevPanel Guide
+    </div>
+    <div class="nav-links">
+      <button class="nav-link active" data-page="dashboard">Dashboard</button>
+      <button class="nav-link" data-page="resources">Tools</button>
+      <button class="nav-link" data-page="tutorial">Tutorial</button>
+      <button class="nav-link" data-page="downloads">Downloads</button>
+    </div>
+  </div>
+</nav>
+
+<!-- DASHBOARD PAGE -->
+<section class="page active" id="page-dashboard">
+  <div class="hero">
+    <h1>Free Fire <span>External</span> Cheat & Panel Development Guide</h1>
+    <p>A comprehensive reference for understanding external modification architecture, memory interaction, anti-cheat analysis, and panel development — built for researchers and developers.</p>
+  </div>
+
+  <div class="disclaimer-banner">
+    <span class="icon">⚠️</span>
+    <p><strong>Disclaimer:</strong> This document is strictly for educational, reverse engineering, and security research purposes only. Developing, distributing, or using unauthorized modifications violates Garena's Terms of Service and may result in permanent bans, legal action, or account termination. This website takes <strong>no responsibility</strong> for any misuse of the information provided. Always operate within ethical, legal, and sandboxed research environments.</p>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title"><span class="num">●</span> Project Metadata</h2>
+    <div class="meta-grid">
+      <div class="meta-item"><div class="meta-label">Game</div><div class="meta-value">Free Fire</div></div>
+      <div class="meta-item"><div class="meta-label">Developer</div><div class="meta-value">111dotsStudio / Garena</div></div>
+      <div class="meta-item"><div class="meta-label">Engine</div><div class="meta-value">Unity</div></div>
+      <div class="meta-item"><div class="meta-label">Release Year</div><div class="meta-value">2017</div></div>
+      <div class="meta-item"><div class="meta-label">Target Platform</div><div class="meta-value">Windows (PC/Emulator)</div></div>
+      <div class="meta-item"><div class="meta-label">Architecture</div><div class="meta-value">64-bit (Primary), ARM</div></div>
+      <div class="meta-item"><div class="meta-label">Network Model</div><div class="meta-value">Client-Server Authoritative</div></div>
+      <div class="meta-item"><div class="meta-label">Anti-Cheat</div><div class="meta-value">Proprietary Garena AC + Server Validation</div></div>
+    </div>
+  </div>
+
+  <div class="toc">
+    <h3>Quick Navigation</h3>
+    <div class="toc-list">
+      <a href="#dash-arch">Architecture & Core</a>
+      <a href="#dash-panel">Panel Structure</a>
+      <a href="#dash-mem">Memory Interaction</a>
+      <a href="#dash-esp">ESP & Aimbot</a>
+      <a href="#dash-ac">Anti-Cheat Analysis</a>
+      <a href="#dash-maint">Maintenance</a>
+      <a href="#dash-perf">Performance</a>
+    </div>
+  </div>
+
+  <div class="section" id="dash-arch">
+    <h2 class="section-title"><span class="num">1</span> Architecture & Core Concepts</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-icon purple">🔄</div><h3>Internal Modifications</h3></div>
+        <p>Cheat code is directly saved in the game's static files space. Injected into the process — easier detection but full access to game internals.</p>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon green">📡</div><h3>External Modifications</h3></div>
+        <p>Sit separately from the game and use Windows API features (or kernel drivers) to read/write memory data. Harder to detect, but limited to memory operations.</p>
+      </div>
+    </div>
+    <div class="note-box info" style="margin-top:16px"><span class="ni">💡</span><div><strong>Server-Side Limits:</strong> Damage calculation, loot distribution, and physics are validated server-side. External tools cannot bypass authoritative mechanics.</div></div>
+    <div class="note-box warn"><span class="ni">⚡</span><div><strong>Unity-Specific:</strong> Mono/IL2CPP structure, managed object layouts, and native-to-managed bridges require offset translation.</div></div>
+  </div>
+
+  <div class="section" id="dash-panel">
+    <h2 class="section-title"><span class="num">2</span> Panel Structure & Technology Stack</h2>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-header"><div class="card-icon dark">💻</div><h3>Language</h3></div>
+        <ul>
+          <li><strong>C++:</strong> Low-level API, minimal overhead, direct Win32/DirectX</li>
+          <li><strong>C#:</strong> Faster UI dev with WinForms/WPF/ImGui.NET</li>
+          <li><strong>Rust:</strong> Memory safety, zero-cost abstractions</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon purple">🎨</div><h3>User Interface</h3></div>
+        <ul>
+          <li><strong>GUI:</strong> ImGui, Qt, WinUI, custom D2D renderers</li>
+          <li><strong>TUI:</strong> Terminal dashboards for headless operation</li>
+          <li><strong>Overlay:</strong> WS_EX_LAYERED, topmost alpha window</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon green">🔐</div><h3>Auth & Licensing</h3></div>
+        <ul>
+          <li><strong>HWID Binding:</strong> CPU, Mobo, Disk, MAC fingerprinting</li>
+          <li><strong>Token System:</strong> JWT/OAuth2 with refresh rotation</li>
+          <li><strong>Framework:</strong> KeyAuth, Auth.gg, custom backend</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="dash-mem">
+    <h2 class="section-title"><span class="num">3</span> Memory Interaction & Pattern Scanning</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-icon orange">🔍</div><h3>Reading Techniques</h3></div>
+        <ul>
+          <li><strong>ReadProcessMemory (RPM):</strong> Standard Win32 API</li>
+          <li><strong>Vectorized Scanning:</strong> SIMD (SSE/AVX) byte comparison</li>
+          <li><strong>Pointer Chaining:</strong> Base + offsets → nested structures</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon red">🛠️</div><h3>Offset Discovery Tools</h3></div>
+        <ul>
+          <li>Cheat Engine — Memory browsing, structure dissect</li>
+          <li>ReClass.NET — Live class reconstruction</li>
+          <li>x64dbg / WinDbg — Instruction tracing, breakpoints</li>
+          <li>Ghidra / IDA Pro — Static analysis of IL2CPP/Mono</li>
+        </ul>
+      </div>
+    </div>
+    <div class="code-block" style="margin-top:16px">
+      <div class="code-header"><span>C++ — Pattern Scan Example</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+      <pre class="code-pre"><span class="kw">auto</span> pattern = <span class="str">"48 8B 05 ?? ?? ?? ?? 48 89 03"</span>;
+<span class="kw">auto</span> base = <span class="fn">ScanProcess</span>(pid, pattern);
+<span class="kw">auto</span> entity_ptr = <span class="fn">Read</span>&lt;<span class="type">uintptr_t</span>&gt;(base + offset_chain[<span class="num">0</span>]);</pre>
+    </div>
+  </div>
+
+  <div class="section" id="dash-esp">
+    <h2 class="section-title"><span class="num">4</span> Feature Implementation (ESP & Aimbot)</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-icon purple">👁️</div><h3>ESP Pipeline</h3></div>
+        <ul>
+          <li>World-to-Screen Matrix from Unity Camera</li>
+          <li>Filtering: Team ID, health &gt; 0, distance, line-of-sight</li>
+          <li>Rendering: D2D/ImGui boxes, skeleton, health bars, tags</li>
+          <li>Optimization: Cache entity list, skip off-screen</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon red">🎯</div><h3>Aimbot Mechanics</h3></div>
+        <ul>
+          <li>Target Selection: FOV cone, closest to crosshair, priority</li>
+          <li>Smoothing: Linear interpolation (lerp) for human movement</li>
+          <li>Prediction: Velocity compensation for projectile/movement</li>
+          <li>Input: SendInput (user-mode) or kernel mouse driver</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note-box warn"><span class="ni">📝</span><div><strong>Note:</strong> Server-side hit registration validates trajectory. Over-aggressive aim values trigger heuristic detection.</div></div>
+  </div>
+
+  <div class="section" id="dash-ac">
+    <h2 class="section-title"><span class="num">5</span> Anti-Cheat Analysis & Evasion Hygiene</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-icon red">🚨</div><h3>Detection Vectors</h3></div>
+        <ul>
+          <li>Handle Enumeration — OpenProcess flags monitored</li>
+          <li>Window Enumeration — Overlay class names, titles</li>
+          <li>Input Timing — Perfect micro-adjustments flagged</li>
+          <li>Signature Scanning — Known libraries, strings</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon green">🛡️</div><h3>Mitigation Strategies</h3></div>
+        <ul>
+          <li>Anti-Debug: IsDebuggerPresent, PEB flags checks</li>
+          <li>String Encryption: Compile-time obfuscation</li>
+          <li>Dynamic Naming: Randomize window titles, threads</li>
+          <li>Sandbox Testing: Validate against VMs and heuristics</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="dash-maint">
+    <h2 class="section-title"><span class="num">6</span> Maintenance, Updates & Distribution</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-icon orange">🔄</div><h3>Update Workflow</h3></div>
+        <ul>
+          <li>Automated Pattern Scanner — fallback signatures</li>
+          <li>Version Control — Git + semantic versioning</li>
+          <li>Cloud Sync — Encrypted JSON/YAML configs</li>
+          <li>Rollback — Fallback to last known working offsets</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon dark">📦</div><h3>Distribution</h3></div>
+        <ul>
+          <li>Stub Loader — Decryptor + memory execution</li>
+          <li>HWID Locking — Server-side validation before unlock</li>
+          <li>Telemetry Dashboard — Crash reports, offset health</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="dash-perf">
+    <h2 class="section-title"><span class="num">7</span> Performance Optimization & Best Practices</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-icon green">⚡</div><h3>Optimization</h3></div>
+        <ul>
+          <li>Render Loop: Cap overlay FPS, batch draw calls</li>
+          <li>Memory Caching: Reduce RPM calls per frame</li>
+          <li>Thread Pool: Separate scanning, input, and UI threads</li>
+          <li>Error Handling: Graceful fallbacks on process detach</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon purple">🏗️</div><h3>Code Architecture</h3></div>
+        <ul>
+          <li>Modular Design: Decouple core, renderer, memory, auth</li>
+          <li>Config-Driven: Toggle features via JSON/TOML</li>
+          <li>Logging: Structured JSON logs with rotation</li>
+          <li>Unit Testing: Validate math, pattern matchers offline</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESOURCES PAGE -->
+<section class="page" id="page-resources">
+  <div class="hero" style="padding-top:32px">
+    <h1>Tool <span>Resources</span></h1>
+    <p>Essential tools for reverse engineering, memory analysis, debugging, and development. Each tool includes descriptions, use cases, and relevant links.</p>
+  </div>
+  <div class="grid-2" id="resources-grid"></div>
+</section>
+
+<!-- TUTORIAL PAGE -->
+<section class="page" id="page-tutorial">
+  <div class="tut-header">
+    <h1 style="font-size:2rem;font-weight:900;margin-bottom:8px">Hands-On <span style="color:var(--secondary)">Tutorial</span></h1>
+    <p style="color:var(--text2);max-width:640px;line-height:1.7">Step-by-step practical guide from UI creation to memory dumping. Follow along in C++ or C# — the logic translates to any language.</p>
+  </div>
+
+  <div class="tut-note">
+    <strong>📌 Important Notes:</strong><br>
+    • Low-level languages (C/C++) are recommended for maximum control, but <strong>any language works</strong> — only the logic differs.<br>
+    • This tutorial uses <strong>C++ and C# examples only</strong>. Use the language toggle below.<br>
+    • We don't cover every single detail (it would be overwhelming). <strong>Search online if you're stuck</strong> — that's part of learning.<br>
+    • Don't be a skid and copy-paste. <strong>Learn from it.</strong> Build your own best version.
+  </div>
+
+  <div class="step-nav">
+    <button class="step-btn active" data-step="step1">Step 1: GUI</button>
+    <button class="step-btn" data-step="step2">Step 2: Auth</button>
+    <button class="step-btn" data-step="step3">Step 3: IL2CPP Dump</button>
+    <button class="step-btn disabled" data-step="step4">Step 4: Coming Soon</button>
+  </div>
+
+  <div id="lang-toggle-wrapper" style="margin-bottom:24px">
+    <span style="font-family:var(--font-mono);font-size:.78rem;color:var(--text2);margin-right:8px">LANGUAGE:</span>
+    <div class="lang-toggle">
+      <button class="lang-btn active" data-lang="cpp">C++</button>
+      <button class="lang-btn" data-lang="csharp">C#</button>
+    </div>
+  </div>
+
+  <!-- ========== STEP 1: GUI ========== -->
+  <div class="step-content active" id="step1">
+    <h2 style="font-size:1.5rem;margin-bottom:8px">Step 1: Professional Panel UI Development</h2>
+    <p style="color:var(--text2);margin-bottom:24px;font-size:.92rem">A comprehensive guide to building beautiful panel-based user interfaces for desktop applications. This tutorial contains in-depth instructions, code snippets, and design best practices.</p>
+
+    <div class="accordion" style="margin-bottom:24px">
+      <div class="acc-item">
+        <div class="acc-q" onclick="toggleAcc(this)">❓ Why does the UI matter? Isn't it just about functionality? <span class="arrow">▼</span></div>
+        <div class="acc-a">A good UI improves usability, reduces errors, and makes your tool professional. While functionality is king, a clean interface helps you navigate features quickly. It also matters for distribution — people trust polished software.</div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-q" onclick="toggleAcc(this)">❓ Should I use GUI or TUI? <span class="arrow">▼</span></div>
+        <div class="acc-a">It depends on your use case. GUI (ImGui, Qt, WinForms) is better for visual overlays and user-friendly panels. TUI (Spectre.Console, ncurses) is great for headless servers or quick tools. Many devs use both — TUI for backend/debug and GUI for the main panel.</div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-q" onclick="toggleAcc(this)">❓ What if I want to skip UI entirely? <span class="arrow">▼</span></div>
+        <div class="acc-a">You absolutely can! A console application that runs silently in the background is perfectly valid. This step is here for those who want it — skip to Step 2 if UI isn't your priority.</div>
+      </div>
+    </div>
+
+    <!-- C# CONTENT -->
+    <div class="lang-content" data-lang="csharp">
+
+      <div class="subsection-divider"><span class="emoji">🖼️</span> Windows Forms Application (.NET Framework)</div>
+
+      <p style="color:var(--text2);font-size:.9rem;margin-bottom:16px"><strong>Objective:</strong> Create a modern, visually appealing panel UI using WinForms and third-party libraries (Guna, Siticone).</p>
+
+      <div class="detail-box"><h4>🛠️ Tools & Libraries</h4>
+        <ul>
+          <li>Visual Studio 2022</li>
+          <li>Guna.UI2 WinForms (NuGet package)</li>
+          <li>Siticone.Desktop.UI (NuGet package)</li>
+          <li>Built-in Toolbox Controls (Panel, Button, Label, etc.)</li>
+        </ul>
+      </div>
+
+      <div class="step-section">
+        <h4>📘 Detailed Implementation Steps</h4>
+        <ol style="padding-left:20px;font-size:.88rem;color:var(--text2);line-height:2">
+          <li>Create a new <strong>Windows Forms App (.NET Framework)</strong> project in Visual Studio.</li>
+          <li>Install desired UI library via <strong>NuGet Package Manager</strong> (e.g., <code>Guna.UI2.WinForms</code>, <code>Siticone.Desktop.UI</code>).</li>
+          <li>Open the Toolbox. You will see new controls (<code>Guna2Panel</code>, <code>Guna2Button</code>, etc.). Drag a <code>Guna2Panel</code> onto the form to act as the main container.</li>
+          <li>Set the panel's <code>Dock</code> property to <code>Fill</code> to occupy entire form, or create a side navigation panel by setting <code>Dock=Left</code> and adjusting width.</li>
+          <li>Add child controls (buttons, labels, data grids) inside panels to design dashboard layouts. Use <strong>'Bring to Front'</strong> / <strong>'Send to Back'</strong> to manage layers.</li>
+          <li>Customize appearance: Use <code>Guna2Panel</code>'s <code>BorderRadius</code>, <code>Shadow</code>, <code>FillColor</code> (gradient). For Siticone, use <code>SiticoneShadowPanel</code>, <code>SiticoneElipse</code>, etc.</li>
+          <li>Create smooth transitions: Use timers or animations to slide panels, change visibility, or build a hamburger menu.</li>
+          <li>Implement responsive design: Anchor controls appropriately and handle resize events to keep panel layouts adaptive.</li>
+          <li>For advanced UI, embed user controls, load forms in panel container using <code>panel.Controls.Clear(); panel.Controls.Add(formInstance);</code></li>
+          <li>Apply consistent themes: set global font, color scheme, and hover effects for buttons to give a modern feel.</li>
+        </ol>
+      </div>
+
+      <div class="step-section">
+        <h4>💻 Code: Initialize Guna2Panel with Button</h4>
+        <div class="code-block">
+          <div class="code-header"><span>C# — Guna2Panel & Button Setup</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <pre class="code-pre"><span class="type">Guna.UI2.WinForms.Guna2Panel</span> panelSidebar = <span class="kw">new</span> <span class="type">Guna.UI2.WinForms.Guna2Panel</span>();
+panelSidebar.Dock = DockStyle.Left;
+panelSidebar.Width = <span class="num">250</span>;
+panelSidebar.FillColor = Color.<span class="fn">FromArgb</span>(<span class="num">40</span>, <span class="num">44</span>, <span class="num">60</span>);
+panelSidebar.BorderRadius = <span class="num">10</span>;
+
+<span class="type">Guna.UI2.WinForms.Guna2Button</span> btnDashboard = <span class="kw">new</span> <span class="type">Guna.UI2.WinForms.Guna2Button</span>();
+btnDashboard.Text = <span class="str">"Dashboard"</span>;
+btnDashboard.Dock = DockStyle.Top;
+btnDashboard.FillColor = Color.<span class="fn">FromArgb</span>(<span class="num">94</span>, <span class="num">148</span>, <span class="num">255</span>);
+btnDashboard.HoverState.FillColor = Color.<span class="fn">FromArgb</span>(<span class="num">75</span>, <span class="num">120</span>, <span class="num">220</span>);
+panelSidebar.Controls.<span class="fn">Add</span>(btnDashboard);</pre>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <h4>💻 Code: Load a Form Inside a Panel</h4>
+        <div class="code-block">
+          <div class="code-header"><span>C# — Embed Form in Panel Container</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <pre class="code-pre"><span class="kw">private void</span> <span class="fn">LoadFormIntoPanel</span>(<span class="type">Form</span> form, <span class="type">Panel</span> panelContainer)
+{
+    panelContainer.Controls.<span class="fn">Clear</span>();
+    form.TopLevel = <span class="kw">false</span>;
+    form.FormBorderStyle = FormBorderStyle.None;
+    form.Dock = DockStyle.Fill;
+    panelContainer.Controls.<span class="fn">Add</span>(form);
+    form.<span class="fn">Show</span>();
+}</pre>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <h4>🔗 Attaching Buttons & UI to Code (Event Wiring)</h4>
+        <div class="detail-box"><h4>Method 1: Double-Click (Fastest)</h4><p>In the Visual Studio Designer, <strong>double-click</strong> any button. VS auto-generates a click event handler. Just write your logic inside.</p></div>
+        <div class="detail-box"><h4>Method 2: Properties Panel → Events Tab</h4><p>Select a control → In Properties, click the <strong>⚡ lightning bolt</strong> → Find the event (e.g., <code>Click</code>) → Double-click to generate handler.</p></div>
+        <div class="detail-box"><h4>Method 3: Manual Code Wiring</h4>
+          <div class="code-block" style="margin:8px 0"><div class="code-header"><span>C# — Manual Event Subscription</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre class="code-pre"><span class="cm">// In constructor after InitializeComponent():</span>
+btnAimbot.Click += <span class="fn">BtnAimbot_Click</span>;
+fovSlider.ValueChanged += <span class="fn">FovSlider_Changed</span>;
+
+<span class="kw">private void</span> <span class="fn">BtnAimbot_Click</span>(<span class="type">object</span> sender, EventArgs e)
+{
+    aimbotEnabled = !aimbotEnabled;
+    btnAimbot.Text = aimbotEnabled ? <span class="str">"Aimbot: ON"</span> : <span class="str">"Aimbot: OFF"</span>;
+    btnAimbot.FillColor = aimbotEnabled ? Color.<span class="fn">FromArgb</span>(<span class="num">22</span>, <span class="num">163</span>, <span class="num">74</span>) : Color.<span class="fn">FromArgb</span>(<span class="num">220</span>, <span class="num">38</span>, <span class="num">38</span>);
+}</pre></div>
+        </div>
+        <div class="detail-box"><h4>Method 4: Lambda (Inline, Quick)</h4>
+          <div class="code-block" style="margin:8px 0"><div class="code-header"><span>C# — Lambda Event Handlers</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre class="code-pre">btnRefresh.Click += (s, e) =&gt; <span class="fn">RefreshOffsets</span>();
+btnSave.Click += (s, e) =&gt; {
+    config.<span class="fn">Save</span>(<span class="str">"config.json"</span>);
+    MessageBox.<span class="fn">Show</span>(<span class="str">"Config saved!"</span>);
+};</pre></div>
+        </div>
+      </div>
+
+      <div class="note-box info"><span class="ni">✨</span><div><strong>Design Tip:</strong> Use consistent spacing, border radius (8-12px), subtle shadows, and a cohesive color palette. Add Font Awesome or Material Icons via image list or icon fonts for modern look. Employ <code>Guna2Transition</code> for animated transitions.</div></div>
+
+      <div class="subsection-divider"><span class="emoji">🖥️</span> Console Application with Spectre.Console (.NET)</div>
+
+      <p style="color:var(--text2);font-size:.9rem;margin-bottom:16px"><strong>Objective:</strong> Build a rich, interactive console panel UI using Spectre.Console library to replace traditional boring console output.</p>
+
+      <div class="detail-box"><h4>🛠️ Tools & Libraries</h4>
+        <ul>
+          <li>Visual Studio</li>
+          <li>Spectre.Console NuGet package</li>
+        </ul>
+      </div>
+
+      <div class="step-section">
+        <h4>📘 Detailed Implementation Steps</h4>
+        <ol style="padding-left:20px;font-size:.88rem;color:var(--text2);line-height:2">
+          <li>Create a new <strong>.NET Console App</strong> project.</li>
+          <li>Install <strong>Spectre.Console</strong> via NuGet.</li>
+          <li>Use Spectre.Console's <code>Layout</code> and <code>Panel</code> classes to create an attractive dashboard.</li>
+          <li>Implement a main menu with <code>SelectionPrompt</code> for user options.</li>
+          <li>Create a dynamic status display: show progress, live tables, and charts.</li>
+          <li>Use <code>FigletText</code> for a title header, and <code>Rule</code> for separation.</li>
+          <li>Build a multi-panel layout: left navigation using a tree, main content using panels, and status bar with a rule.</li>
+          <li>Combine <code>AnsiConsole</code>, <code>Markup</code> for color styling, and emojis for better UX.</li>
+          <li>Handle user input with <code>TextPrompt</code> or Confirmation prompts.</li>
+          <li>Implement a simulated 'login' screen that verifies credentials with hidden password.</li>
+        </ol>
+      </div>
+
+      <div class="step-section">
+        <h4>💻 Code: Beautiful Main Panel UI</h4>
+        <div class="code-block">
+          <div class="code-header"><span>C# — Spectre.Console Dashboard</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <pre class="code-pre"><span class="kw">using</span> Spectre.Console;
+
+<span class="cm">// Header</span>
+AnsiConsole.<span class="fn">Write</span>(<span class="kw">new</span> <span class="type">FigletText</span>(<span class="str">"Dashboard"</span>).<span class="fn">Color</span>(Color.Cyan));
+
+<span class="cm">// Panel Layout</span>
+<span class="kw">var</span> panel = <span class="kw">new</span> <span class="type">Panel</span>(<span class="str">"Welcome! Select an option from menu below."</span>)
+{
+    Border = BoxBorder.Rounded,
+    Header = <span class="kw">new</span> <span class="type">PanelHeader</span>(<span class="str">"[yellow]Main Control Panel[/]"</span>),
+    Padding = <span class="kw">new</span> <span class="type">Padding</span>(<span class="num">2</span>, <span class="num">1</span>, <span class="num">2</span>, <span class="num">1</span>)
+};
+AnsiConsole.<span class="fn">Write</span>(panel);
+
+<span class="cm">// Menu selection</span>
+<span class="kw">var</span> action = AnsiConsole.<span class="fn">Prompt</span>(
+    <span class="kw">new</span> <span class="type">SelectionPrompt</span>&lt;<span class="type">string</span>&gt;()
+        .<span class="fn">Title</span>(<span class="str">"[green]What would you like to do?[/]"</span>)
+        .<span class="fn">PageSize</span>(<span class="num">10</span>)
+        .<span class="fn">AddChoices</span>(<span class="kw">new</span>[] { <span class="str">"Show Data"</span>, <span class="str">"Process Items"</span>, <span class="str">"Exit"</span> }));
+AnsiConsole.<span class="fn">MarkupLine</span>($<span class="str">"You selected [blue]{action}[/]"</span>);</pre>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <h4>💻 Code: Login Prompt with Hidden Password</h4>
+        <div class="code-block">
+          <div class="code-header"><span>C# — Spectre.Console Login</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <pre class="code-pre"><span class="kw">var</span> username = AnsiConsole.<span class="fn">Ask</span>&lt;<span class="type">string</span>&gt;(<span class="str">"[green]Enter username:[/]"</span>);
+<span class="kw">var</span> password = AnsiConsole.<span class="fn">Prompt</span>(
+    <span class="kw">new</span> <span class="type">TextPrompt</span>&lt;<span class="type">string</span>&gt;(<span class="str">"[green]Enter password:[/]"</span>)
+        .<span class="fn">Secret</span>());
+AnsiConsole.<span class="fn">MarkupLineIf</span>(username == <span class="str">"admin"</span> && password == <span class="str">"pass"</span>, <span class="str">"[lime]Login successful![/]"</span>);</pre>
+        </div>
+      </div>
+
+      <div class="note-box info"><span class="ni">✨</span><div><strong>Design Tip:</strong> Combine multiple panels using the <code>Layout</code> class that splits console into columns/rows. Use <code>Canvas</code> to create simple graphs. Ensure contrast and color accessibility.</div></div>
+
+    </div>
+
+    <!-- C++ CONTENT -->
+    <div class="lang-content active" data-lang="cpp">
+
+      <div class="subsection-divider"><span class="emoji">🖼️</span> Qt Framework GUI Application <span class="alt-badge">Recommended</span> <span class="alt-badge">Alt: ImGui</span></div>
+
+      <p style="color:var(--text2);font-size:.9rem;margin-bottom:16px"><strong>Objective:</strong> Develop a cross-platform desktop application with a login system and a main UI panel using Qt (C++).</p>
+
+      <div class="detail-box"><h4>🛠️ Tools & Libraries</h4>
+        <ul>
+          <li>Qt Creator (or Visual Studio + Qt tools)</li>
+          <li>Qt Widgets Module</li>
+          <li>Qt Designer (.ui files)</li>
+          <li>QSS (Qt Style Sheets)</li>
+        </ul>
+      </div>
+
+      <div class="step-section">
+        <h4>📘 Detailed Implementation Steps</h4>
+        <ol style="padding-left:20px;font-size:.88rem;color:var(--text2);line-height:2">
+          <li>Install Qt and Qt Creator. Create a new <strong>Qt Widgets Application</strong> project.</li>
+          <li>Design the Login Dialog: Use <code>QDialog</code>, add <code>QLineEdit</code> for username/password, <code>QPushButton</code> for login, <code>QLabel</code> for title.</li>
+          <li>In the login logic, check hardcoded credentials or query from database. Emit <code>accepted()</code> signal upon success.</li>
+          <li>Create the Main Window (<code>QMainWindow</code>) that will contain the main panel UI: use <code>QStackedWidget</code> for multi-page content, <code>QListWidget</code> or <code>QToolBar</code> for navigation, and central <code>QWidget</code>.</li>
+          <li>Apply modern style sheets: border-radius on buttons, background gradients, hover effects for sidebar items.</li>
+          <li>After successful login, hide the login dialog and show the main window.</li>
+          <li>Implement main UI panels: For example, dashboard area with <code>QChart</code> or <code>QTableView</code>, and side menu with categories.</li>
+          <li>Use layouts (<code>QVBoxLayout</code>, <code>QHBoxLayout</code>, <code>QGridLayout</code>) to organize controls in main window.</li>
+          <li>Add dynamic content switching: connect menu buttons to change central widget index on <code>QStackedWidget</code>.</li>
+          <li>Handle application shutdown, saving user preferences, and add window animations (using <code>QPropertyAnimation</code>) for smoother transitions.</li>
+        </ol>
+      </div>
+
+      <div class="step-section">
+        <h4>💻 Code: Login Dialog Implementation</h4>
+        <div class="code-block">
+          <div class="code-header"><span>C++ — LoginDialog.h</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <pre class="code-pre"><span class="kw">#include</span> <span class="str">&lt;QDialog&gt;</span>
+<span class="kw">class</span> <span class="type">QLineEdit</span>;
+<span class="kw">class</span> <span class="type">QPushButton</span>;
+
+<span class="kw">class</span> <span class="type">LoginDialog</span> : <span class="kw">public</span> <span class="type">QDialog</span>
+{
+    Q_OBJECT
+<span class="kw">public</span>:
+    <span class="kw">explicit</span> <span class="fn">LoginDialog</span>(<span class="type">QWidget</span> *parent = <span class="kw">nullptr</span>);
+<span class="kw">private slots</span>:
+    <span class="kw">void</span> <span class="fn">onLoginClicked</span>();
+<span class="kw">private</span>:
+    <span class="type">QLineEdit</span> *userEdit;
+    <span class="type">QLineEdit</span> *passEdit;
+    <span class="type">QPushButton</span> *loginBtn;
+};</pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span>C++ — LoginDialog.cpp</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <pre class="code-pre"><span class="kw">#include</span> <span class="str">"LoginDialog.h"</span>
+<span class="kw">#include</span> <span class="str">&lt;QVBoxLayout&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;QMessageBox&gt;</span>
+
+<span class="type">LoginDialog</span>::<span class="fn">LoginDialog</span>(<span class="type">QWidget</span> *parent) : <span class="type">QDialog</span>(parent)
+{
+    <span class="fn">setWindowTitle</span>(<span class="str">"Login"</span>);
+    <span class="fn">setFixedSize</span>(<span class="num">300</span>, <span class="num">150</span>);
+    <span class="type">QVBoxLayout</span> *layout = <span class="kw">new</span> <span class="type">QVBoxLayout</span>(<span class="kw">this</span>);
+    userEdit = <span class="kw">new</span> <span class="type">QLineEdit</span>;
+    userEdit-&gt;<span class="fn">setPlaceholderText</span>(<span class="str">"Username"</span>);
+    passEdit = <span class="kw">new</span> <span class="type">QLineEdit</span>;
+    passEdit-&gt;<span class="fn">setPlaceholderText</span>(<span class="str">"Password"</span>);
+    passEdit-&gt;<span class="fn">setEchoMode</span>(<span class="type">QLineEdit</span>::Password);
+    loginBtn = <span class="kw">new</span> <span class="type">QPushButton</span>(<span class="str">"Login"</span>);
+    layout-&gt;<span class="fn">addWidget</span>(userEdit);
+    layout-&gt;<span class="fn">addWidget</span>(passEdit);
+    layout-&gt;<span class="fn">addWidget</span>(loginBtn);
+    <span class="fn">connect</span>(loginBtn, &amp;<span class="type">QPushButton</span>::clicked, <span class="kw">this</span>, &amp;<span class="type">LoginDialog</span>::onLoginClicked);
+}
+
+<span class="kw">void</span> <span class="type">LoginDialog</span>::<span class="fn">onLoginClicked</span>()
+{
+    <span class="kw">if</span> (userEdit-&gt;<span class="fn">text</span>() == <span class="str">"admin"</span> &amp;&amp; passEdit-&gt;<span class="fn">text</span>() == <span class="str">"secret"</span>) {
+        <span class="fn">accept</span>();
+    } <span class="kw">else</span> {
+        <span class="type">QMessageBox</span>::<span class="fn">warning</span>(<span class="kw">this</span>, <span class="str">"Error"</span>, <span class="str">"Invalid credentials"</span>);
+    }
+}</pre>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <h4>💻 Code: Main Window with Stacked Widget</h4>
+        <div class="code-block">
+          <div class="code-header"><span>C++ — MainWindow with QStackedWidget</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <pre class="code-pre"><span class="cm">// In MainWindow constructor</span>
+<span class="type">QStackedWidget</span> *stackedWidget = <span class="kw">new</span> <span class="type">QStackedWidget</span>(<span class="kw">this</span>);
+<span class="type">QWidget</span> *dashboardPanel = <span class="kw">new</span> <span class="type">QWidget</span>;
+<span class="type">QWidget</span> *settingsPanel = <span class="kw">new</span> <span class="type">QWidget</span>;
+<span class="cm">// add child widgets to each panel...</span>
+stackedWidget-&gt;<span class="fn">addWidget</span>(dashboardPanel);
+stackedWidget-&gt;<span class="fn">addWidget</span>(settingsPanel);
+
+<span class="cm">// Side menu using QListWidget</span>
+<span class="type">QListWidget</span> *menu = <span class="kw">new</span> <span class="type">QListWidget</span>;
+menu-&gt;<span class="fn">addItem</span>(<span class="str">"Dashboard"</span>);
+menu-&gt;<span class="fn">addItem</span>(<span class="str">"Settings"</span>);
+
+<span class="fn">connect</span>(menu, &amp;<span class="type">QListWidget</span>::currentRowChanged,
+         stackedWidget, &amp;<span class="type">QStackedWidget</span>::setCurrentIndex);
+
+<span class="cm">// Main layout</span>
+<span class="type">QHBoxLayout</span> *mainLayout = <span class="kw">new</span> <span class="type">QHBoxLayout</span>;
+mainLayout-&gt;<span class="fn">addWidget</span>(menu, <span class="num">1</span>);
+mainLayout-&gt;<span class="fn">addWidget</span>(stackedWidget, <span class="num">4</span>);
+<span class="type">QWidget</span> *central = <span class="kw">new</span> <span class="type">QWidget</span>;
+central-&gt;<span class="fn">setLayout</span>(mainLayout);
+<span class="fn">setCentralWidget</span>(central);</pre>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <h4>🔗 Attaching Buttons & UI to Code (Event Wiring)</h4>
+        <div class="detail-box"><h4>Method 1: Qt Designer (No Code)</h4><p>Open your <code>.ui</code> file in Qt Designer → Right-click a button → <strong>"Go to slot…"</strong> → Select <code>clicked()</code> → Qt auto-generates the slot function. Just fill in the logic.</p></div>
+        <div class="detail-box"><h4>Method 2: Manual connect()</h4>
+          <div class="code-block" style="margin:8px 0"><div class="code-header"><span>C++ — Signal/Slot Connection</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre class="code-pre"><span class="cm">// In constructor after setupUi:</span>
+<span class="fn">connect</span>(ui-&gt;btnAimbot, &amp;<span class="type">QPushButton</span>::clicked, <span class="kw">this</span>, [&amp;]() {
+    aimbotEnabled = !aimbotEnabled;
+    ui-&gt;btnAimbot-&gt;<span class="fn">setText</span>(aimbotEnabled ? <span class="str">"Aimbot: ON"</span> : <span class="str">"Aimbot: OFF"</span>);
+    ui-&gt;btnAimbot-&gt;<span class="fn">setStyleSheet</span>(aimbotEnabled ? <span class="str">"background-color: #16A34A;"</span> : <span class="str">"background-color: #DC2626;"</span>);
+});
+
+<span class="cm">// Slider to value label</span>
+<span class="fn">connect</span>(ui-&gt;fovSlider, &amp;<span class="type">QSlider</span>::valueChanged, <span class="kw">this</span>, [&amp;](<span class="type">int</span> val) {
+    ui-&gt;fovLabel-&gt;<span class="fn">setText</span>(<span class="str">"FOV: "</span> + <span class="type">QString</span>::<span class="fn">number</span>(val));
+    config.fov = val;
+});</pre></div>
+        </div>
+      </div>
+
+      <div class="note-box info"><span class="ni">✨</span><div><strong>Design Tip:</strong> Use QSS for modern flat UI. Example: <code>QPushButton { background-color: #3498db; border-radius: 5px; padding: 8px; } QPushButton:hover { background-color: #2980b9; }</code>. Add shadows with <code>QGraphicsDropShadowEffect</code>, use <code>QPropertyAnimation</code> for sliding sidebars. Load custom fonts.</div></div>
+
+    </div>
+
+    <!-- GENERAL BEST PRACTICES (shared) -->
+    <div class="subsection-divider" style="margin-top:36px"><span class="emoji">🔧</span> General Best Practices</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-icon green">📐</div><h3>Responsiveness & Rendering</h3></div>
+        <ul>
+          <li>Always test on different screen resolutions</li>
+          <li>For C# WinForms, use double buffering: <code>SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer, true)</code></li>
+          <li>Implement error boundaries and loading indicators</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon purple">🏗️</div><h3>Architecture & Workflow</h3></div>
+        <ul>
+          <li>Learn MVVM/MVC patterns to separate UI logic from business logic</li>
+          <li>Use version control (Git) and iterative design for UI development</li>
+          <li>Keep UI responsive — offload heavy work to background threads</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="summary-box">
+      <h4>📋 Key Takeaways — Step 1</h4>
+      <ul>
+        <li>UI is optional but recommended for usability and professionalism</li>
+        <li><strong>C#/WinForms:</strong> Use Guna2 or Siticone for modern look. Wire events via double-click, Properties tab, manual <code>+=</code>, or lambdas</li>
+        <li><strong>C#/Spectre.Console:</strong> Use <code>SelectionPrompt</code>, <code>TextPrompt</code>, <code>Panel</code>, and <code>FigletText</code> for rich TUI</li>
+        <li><strong>C++/Qt:</strong> Use Signals & Slots to wire UI → code. Methods: Designer "Go to slot", manual <code>connect()</code>, lambdas</li>
+        <li>Separate UI logic from business logic (MVVM/MVC pattern)</li>
+        <li>Use consistent theming, spacing, and animations for a polished feel</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ========== STEP 2: AUTH ========== -->
+  <div class="step-content" id="step2">
+    <h2 style="font-size:1.5rem;margin-bottom:8px">Step 2: Authentication & User Management</h2>
+    <p style="color:var(--text2);margin-bottom:8px;font-size:.92rem">Extend the professional panel UI from Step 1 with secure authentication. Two approaches: <strong>Keyauth.cc</strong> (ready-to-use) or <strong>Self-hosted Node.js</strong> (full control).</p>
+    <div class="note-box info" style="margin-bottom:24px"><span class="ni">💡</span><div><strong>My take:</strong> Auth doesn't matter as much as real functions. I care about features, not frontend auth. But if you want it, here's how.</div></div>
+
+    <div class="toc" style="margin-bottom:32px">
+      <h3>Section Navigation</h3>
+      <div class="toc-list">
+        <a href="#auth-option1">Option 1: Keyauth.cc</a>
+        <a href="#auth-option2">Option 2: Self-hosted Node.js</a>
+        <a href="#auth-security">Security Best Practices</a>
+      </div>
+    </div>
+
+    <!-- OPTION 1: KEYAUTH -->
+    <div class="step-section" id="auth-option1">
+      <h3>Option 1: Using Keyauth.cc <span class="alt-badge">Commercial Service</span></h3>
+      <p style="color:var(--text2);font-size:.9rem;margin-bottom:16px">Keyauth.cc is a powerful authentication and licensing system. It handles user login, hardware ID locking, expiry dates, and remote variables — no backend coding required.</p>
+
+      <!-- C# Keyauth -->
+      <div class="lang-content" data-lang="csharp">
+        <h4 style="margin-top:20px">Setup for C# WinForms</h4>
+        <ol style="padding-left:20px;font-size:.88rem;color:var(--text2);line-height:2">
+          <li>Register an account at <a href="https://keyauth.cc" target="_blank">Keyauth.cc</a> and create an application.</li>
+          <li>Download the <strong>Keyauth .NET DLL</strong> from the developer section.</li>
+          <li>Add the DLL as a reference in your WinForms project.</li>
+          <li>Create a login form (or reuse the one from Step 1) and add the Keyauth logic.</li>
+        </ol>
+        <div class="code-block" style="margin-top:12px">
+          <div class="code-header"><span>C# — Keyauth Login Integration</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <pre class="code-pre"><span class="kw">using</span> KeyAuth;
+
+<span class="kw">public partial class</span> <span class="type">LoginForm</span> : <span class="type">Form</span>
+{
+    <span class="kw">private</span> <span class="type">api</span> keyAuthApi;
+
+    <span class="kw">public</span> <span class="fn">LoginForm</span>()
+    {
+        <span class="fn">InitializeComponent</span>();
+        <span class="cm">// Replace with your app credentials</span>
+        keyAuthApi = <span class="kw">new</span> <span class="type">api</span>(
+            name: <span class="str">"YourAppName"</span>,
+            ownerid: <span class="str">"YourOwnerId"</span>,
+            secret: <span class="str">"YourAppSecret"</span>,
+            version: <span class="str">"1.0"</span>
+        );
+    }
+
+    <span class="kw">private async void</span> <span class="fn">btnLogin_Click</span>(<span class="type">object</span> sender, EventArgs e)
+    {
+        <span class="kw">await</span> keyAuthApi.<span class="fn">login</span>(txtUsername.Text, txtPassword.Text);
+        <span class="kw">if</span> (keyAuthApi.response.success)
+        {
+            MessageBox.<span class="fn">Show</span>(<span class="str">"Login successful!"</span>);
+            <span class="cm">// Open main panel UI (from Step 1)</span>
+            <span class="type">MainPanelForm</span> mainForm = <span class="kw">new</span> <span class="type">MainPanelForm</span>();
+            mainForm.<span class="fn">Show</span>();
+            <span class="kw">this</span>.<span class="fn">Hide</span>();
+        }
+        <span class="kw">else</span>
+        {
+            MessageBox.<span class="fn">Show</span>($<span class="str">"Error: {keyAuthApi.response.message}"</span>);
+        }
+    }
+}</pre>
+        </div>
+      </div>
+
+      <!-- C++ Keyauth -->
+      <div class="lang-content active" data-lang="cpp">
+        <h4 style="margin-top:20px">Setup for C++/Qt</h4>
+        <p style="color:var(--text2);font-size:.88rem;margin-bottom:12px">Keyauth provides a C++ library (static or DLL). Integrate it into your Qt project:</p>
+        <ol style="padding-left:20px;font-size:.88rem;color:var(--text2);line-height:2">
+          <li>Download the Keyauth C++ SDK and place the headers and lib files in your project.</li>
+          <li>Add the include path and link the library in your <code>.pro</code> file.</li>
+          <li>Create a login dialog (<code>QDialog</code>) that calls the Keyauth C++ API.</li>
+        </ol>
+        <div class="code-block" style="margin-top:12px">
+          <div class="code-header"><span>C++ — Keyauth Login in Qt</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <pre class="code-pre"><span class="kw">#include</span> <span class="str">"keyauth.h"</span>
+<span class="kw">#include</span> <span class="str">&lt;QMessageBox&gt;</span>
+
+<span class="kw">void</span> <span class="type">LoginDialog</span>::<span class="fn">onLoginClicked</span>()
+{
+    std::string username = userEdit-&gt;<span class="fn">text</span>().<span class="fn">toStdString</span>();
+    std::string password = passEdit-&gt;<span class="fn">text</span>().<span class="fn">toStdString</span>();
+
+    <span class="type">KeyAuthApp</span> app(<span class="str">"YourAppName"</span>, <span class="str">"YourOwnerId"</span>, <span class="str">"YourSecret"</span>, <span class="str">"1.0"</span>);
+    <span class="kw">if</span> (app.<span class="fn">login</span>(username, password))
+    {
+        <span class="fn">accept</span>(); <span class="cm">// close dialog and proceed to main window</span>
+    }
+    <span class="kw">else</span>
+    {
+        <span class="type">QMessageBox</span>::<span class="fn">warning</span>(<span class="kw">this</span>, <span class="str">"Error"</span>,
+            <span class="type">QString</span>::<span class="fn">fromStdString</span>(app.error_message));
+    }
+}</pre>
+        </div>
+        <div class="note-box info" style="margin-top:12px"><span class="ni">📌</span><div>After a successful login, show the main panel window (the <code>QMainWindow</code> you built in Step 1). Keyauth also supports offline login, hardware locking, and license key activation.</div></div>
+      </div>
+    </div>
+
+    <!-- OPTION 2: SELF-HOSTED -->
+    <div class="step-section" id="auth-option2">
+      <h3>Option 2: Self-hosted Node.js Server + JWT <span class="alt-badge">Free & Full Control</span></h3>
+      <p style="color:var(--text2);font-size:.9rem;margin-bottom:16px">If you prefer full control over user data and authentication logic, build a lightweight Node.js backend. It will expose REST endpoints that your panel UI (C# or Qt) calls over HTTP.</p>
+
+      <h4>🖥️ Node.js Server Setup</h4>
+      <ol style="padding-left:20px;font-size:.88rem;color:var(--text2);line-height:2">
+        <li>Initialize a Node.js project: <code>npm init -y</code></li>
+        <li>Install dependencies: <code>npm install express jsonwebtoken bcryptjs cors dotenv</code></li>
+        <li>Create <code>server.js</code> with the following structure:</li>
+      </ol>
+      <div class="code-block" style="margin-top:8px">
+        <div class="code-header"><span>JavaScript — Node.js Auth Server</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre class="code-pre"><span class="kw">const</span> express = <span class="fn">require</span>(<span class="str">'express'</span>);
+<span class="kw">const</span> jwt = <span class="fn">require</span>(<span class="str">'jsonwebtoken'</span>);
+<span class="kw">const</span> bcrypt = <span class="fn">require</span>(<span class="str">'bcryptjs'</span>);
+<span class="kw">const</span> cors = <span class="fn">require</span>(<span class="str">'cors'</span>);
+<span class="fn">require</span>(<span class="str">'dotenv'</span>).<span class="fn">config</span>();
+
+<span class="kw">const</span> app = <span class="fn">express</span>();
+app.<span class="fn">use</span>(express.<span class="fn">json</span>());
+app.<span class="fn">use</span>(<span class="fn">cors</span>());
+
+<span class="cm">// In-memory user store (replace with real database)</span>
+<span class="kw">const</span> users = [];
+
+app.<span class="fn">post</span>(<span class="str">'/register'</span>, <span class="kw">async</span> (req, res) =&gt; {
+    <span class="kw">try</span> {
+        <span class="kw">const</span> { username, password } = req.body;
+        <span class="kw">const</span> hashed = <span class="kw">await</span> bcrypt.<span class="fn">hash</span>(password, <span class="num">10</span>);
+        users.<span class="fn">push</span>({ username, password: hashed });
+        res.<span class="fn">json</span>({ success: <span class="kw">true</span> });
+    } <span class="kw">catch</span> (err) {
+        res.<span class="fn">status</span>(<span class="num">500</span>).<span class="fn">json</span>({ error: err.message });
+    }
+});
+
+app.<span class="fn">post</span>(<span class="str">'/login'</span>, <span class="kw">async</span> (req, res) =&gt; {
+    <span class="kw">const</span> { username, password } = req.body;
+    <span class="kw">const</span> user = users.<span class="fn">find</span>(u =&gt; u.username === username);
+    <span class="kw">if</span> (!user) <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">401</span>).<span class="fn">json</span>({ error: <span class="str">'Invalid credentials'</span> });
+    <span class="kw">const</span> valid = <span class="kw">await</span> bcrypt.<span class="fn">compare</span>(password, user.password);
+    <span class="kw">if</span> (!valid) <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">401</span>).<span class="fn">json</span>({ error: <span class="str">'Invalid credentials'</span> });
+    <span class="kw">const</span> token = jwt.<span class="fn">sign</span>({ username }, process.env.JWT_SECRET || <span class="str">'secretkey'</span>, { expiresIn: <span class="str">'1h'</span> });
+    res.<span class="fn">json</span>({ success: <span class="kw">true</span>, token });
+});
+
+app.<span class="fn">listen</span>(<span class="num">3000</span>, () =&gt; console.<span class="fn">log</span>(<span class="str">'Server running on port 3000'</span>));</pre>
+      </div>
+
+      <!-- C# Client -->
+      <div class="lang-content" data-lang="csharp">
+        <h4 style="margin-top:24px">C# WinForms Client Integration</h4>
+        <p style="color:var(--text2);font-size:.88rem;margin-bottom:12px">Use <code>HttpClient</code> to call the Node.js endpoints. Store the JWT token securely (e.g., <code>ProtectedData</code> or user-level storage).</p>
+        <div class="code-block">
+          <div class="code-header"><span>C# — HttpClient Auth + Login Handler</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <pre class="code-pre"><span class="kw">using</span> System.Net.Http;
+<span class="kw">using</span> System.Text.Json;
+
+<span class="kw">public async</span> <span class="type">Task</span>&lt;<span class="type">string</span>&gt; <span class="fn">AuthenticateAsync</span>(<span class="type">string</span> username, <span class="type">string</span> password)
+{
+    <span class="kw">using var</span> client = <span class="kw">new</span> <span class="type">HttpClient</span>();
+    <span class="kw">var</span> loginData = <span class="kw">new</span> { username, password };
+    <span class="kw">var</span> content = <span class="kw">new</span> <span class="type">StringContent</span>(
+        JsonSerializer.<span class="fn">Serialize</span>(loginData), Encoding.UTF8, <span class="str">"application/json"</span>);
+    <span class="kw">var</span> response = <span class="kw">await</span> client.<span class="fn">PostAsync</span>(<span class="str">"http://localhost:3000/login"</span>, content);
+    <span class="kw">if</span> (response.IsSuccessStatusCode)
+    {
+        <span class="kw">var</span> json = <span class="kw">await</span> response.Content.<span class="fn">ReadAsStringAsync</span>();
+        <span class="kw">var</span> result = JsonSerializer.<span class="fn">Deserialize</span>&lt;<span class="type">LoginResponse</span>&gt;(json);
+        <span class="kw">return</span> result.token; <span class="cm">// store this token</span>
+    }
+    <span class="kw">throw new</span> <span class="type">Exception</span>(<span class="str">"Login failed"</span>);
+}
+
+<span class="cm">// Then in your login button click:</span>
+<span class="kw">private async void</span> <span class="fn">btnLogin_Click</span>(<span class="type">object</span> sender, EventArgs e)
+{
+    <span class="kw">try</span>
+    {
+        <span class="type">string</span> token = <span class="kw">await</span> <span class="fn">AuthenticateAsync</span>(txtUsername.Text, txtPassword.Text);
+        <span class="cm">// Save token (Properties.Settings or secure storage)</span>
+        MessageBox.<span class="fn">Show</span>(<span class="str">"Login successful!"</span>);
+        <span class="type">MainPanelForm</span> main = <span class="kw">new</span> <span class="type">MainPanelForm</span>();
+        main.<span class="fn">Show</span>();
+        <span class="kw">this</span>.<span class="fn">Hide</span>();
+    }
+    <span class="kw">catch</span> (<span class="type">Exception</span> ex)
+    {
+        MessageBox.<span class="fn">Show</span>(ex.Message);
+    }
+}</pre>
+        </div>
+      </div>
+
+      <!-- C++ Client -->
+      <div class="lang-content active" data-lang="cpp">
+        <h4 style="margin-top:24px">C++/Qt Client Integration</h4>
+        <p style="color:var(--text2);font-size:.88rem;margin-bottom:12px">Use <code>QNetworkAccessManager</code> to send HTTP requests and parse JSON replies.</p>
+        <div class="code-block">
+          <div class="code-header"><span>C++ — Qt HTTP Auth Client</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <pre class="code-pre"><span class="kw">#include</span> <span class="str">&lt;QNetworkAccessManager&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;QNetworkRequest&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;QNetworkReply&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;QJsonDocument&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;QJsonObject&gt;</span>
+
+<span class="kw">void</span> <span class="type">LoginDialog</span>::<span class="fn">onLoginClicked</span>()
+{
+    <span class="type">QNetworkAccessManager</span> *manager = <span class="kw">new</span> <span class="type">QNetworkAccessManager</span>(<span class="kw">this</span>);
+    <span class="type">QUrl</span> url(<span class="str">"http://localhost:3000/login"</span>);
+    <span class="type">QNetworkRequest</span> request(url);
+    request.<span class="fn">setHeader</span>(<span class="type">QNetworkRequest</span>::ContentTypeHeader, <span class="str">"application/json"</span>);
+
+    <span class="type">QJsonObject</span> json;
+    json[<span class="str">"username"</span>] = userEdit-&gt;<span class="fn">text</span>();
+    json[<span class="str">"password"</span>] = passEdit-&gt;<span class="fn">text</span>();
+    <span class="type">QByteArray</span> data = <span class="type">QJsonDocument</span>(json).<span class="fn">toJson</span>();
+
+    <span class="type">QNetworkReply</span> *reply = manager-&gt;<span class="fn">post</span>(request, data);
+    <span class="fn">connect</span>(reply, &amp;<span class="type">QNetworkReply</span>::finished, [=]() {
+        <span class="kw">if</span> (reply-&gt;<span class="fn">error</span>() == <span class="type">QNetworkReply</span>::NoError) {
+            <span class="type">QByteArray</span> response = reply-&gt;<span class="fn">readAll</span>();
+            <span class="type">QJsonDocument</span> doc = <span class="type">QJsonDocument</span>::<span class="fn">fromJson</span>(response);
+            <span class="type">QString</span> token = doc.<span class="fn">object</span>()[<span class="str">"token"</span>].<span class="fn">toString</span>();
+            <span class="cm">// Save token (e.g., QSettings) and accept dialog</span>
+            <span class="fn">accept</span>();
+        } <span class="kw">else</span> {
+            <span class="type">QMessageBox</span>::<span class="fn">warning</span>(<span class="kw">this</span>, <span class="str">"Error"</span>, <span class="str">"Authentication failed"</span>);
+        }
+        reply-&gt;<span class="fn">deleteLater</span>();
+        manager-&gt;<span class="fn">deleteLater</span>();
+    });
+}</pre>
+        </div>
+        <div class="note-box info" style="margin-top:12px"><span class="ni">📌</span><div>For subsequent API calls, include the token in the <code>Authorization: Bearer &lt;token&gt;</code> header.</div></div>
+      </div>
+    </div>
+
+    <!-- SECURITY BEST PRACTICES -->
+    <div class="step-section" id="auth-security">
+      <h3>🔒 Security & Design Best Practices</h3>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-icon red">🔐</div><h3>Security Essentials</h3></div>
+          <ul>
+            <li><strong>Never hardcode secrets</strong> — use environment variables or secure config files</li>
+            <li><strong>Hash passwords</strong> (bcrypt) when self-hosting — never store plain text</li>
+            <li><strong>Use HTTPS</strong> in production to prevent token interception</li>
+            <li><strong>Implement token refresh</strong> for long-running desktop sessions</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-icon green">🛡️</div><h3>Hardening & UX</h3></div>
+          <ul>
+            <li><strong>Add hardware locking</strong> (Keyauth) or device fingerprinting to prevent credential sharing</li>
+            <li><strong>Provide visual feedback</strong> — loading spinners, password strength meters, etc.</li>
+            <li><strong>Rate limit</strong> login attempts to prevent brute force</li>
+            <li><strong>Log auth events</strong> for audit trails and anomaly detection</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-box">
+      <h4>📋 Key Takeaways — Step 2</h4>
+      <ul>
+        <li>Two auth options: <strong>Keyauth</strong> (fast, commercial, HWID locking) or <strong>Self-hosted Node.js</strong> (free, full control, JWT-based)</li>
+        <li>Keyauth: Drop-in DLL/SDK for C# and C++ — handles licensing, HWID, expiry automatically</li>
+        <li>Self-hosted: Express + bcrypt + JWT — you own the data, but must secure the server yourself</li>
+        <li>Always use HTTPS, hashed passwords, and token-based sessions</li>
+        <li>Auth is optional for personal tools — focus on features first</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ========== STEP 3: IL2CPP DUMP ========== -->
+  <div class="step-content" id="step3">
+    <h2 style="font-size:1.5rem;margin-bottom:8px">Step 3: Dumping IL2CPP for Free Fire</h2>
+    <p style="color:var(--text2);margin-bottom:8px;font-size:.92rem">A comprehensive guide to extracting IL2CPP binaries and global-metadata.dat from Free Fire using GameGuardian, memory editing, and Il2CppDumper. This process reveals client-side near-source code for analysis and modding.</p>
+
+    <div class="note-box danger" style="margin-bottom:20px"><span class="ni">⚠️</span><div><strong>Legal & Ethical Warning:</strong> Dumping game code may violate the game's Terms of Service. This tutorial is for <strong>educational purposes only</strong>. Use at your own risk.</div></div>
+
+    <div class="note-box danger" style="margin-bottom:24px"><span class="ni">🚫</span><div><strong>Don't be a skid:</strong> Don't copy-paste — learn from it. What's presented here is the core foundation, but you have to make your own best version yourself.</div></div>
+
+    <!-- WHAT IS IL2CPP -->
+    <div class="step-section">
+      <h3>📖 What is IL2CPP?</h3>
+      <p style="color:var(--text2);font-size:.9rem;line-height:1.7">IL2CPP (Intermediate Language To C++) is Unity's scripting backend that converts C# game code into native C++ before compilation. It improves performance, security, and memory management. <strong>Dumping IL2CPP</strong> means recovering the original C# signatures, types, methods, and metadata — effectively giving you a client-side source code representation.</p>
+      <div class="note-box info" style="margin-top:12px"><span class="ni">ℹ️</span><div><strong>Manual approach:</strong> You can dump memory manually and search for ELF or Global-Metadata headers manually if you want — the scripts just automate this process.</div></div>
+    </div>
+
+    <!-- TOOLS REQUIRED -->
+    <div class="step-section">
+      <h3>🛠️ Tools Required</h3>
+      <table class="info-table">
+        <thead><tr><th>Tool</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Rooted Android device or emulator</strong></td><td>Memory editing requires root access</td></tr>
+          <tr><td><strong>GameGuardian</strong></td><td>Search/replace patterns, dump memory</td></tr>
+          <tr><td><strong>MetadataSearcher Lua script</strong></td><td>Locate global-metadata in memory</td></tr>
+          <tr><td><strong>Lib Dumper Lua script</strong></td><td>Extract libil2cpp.so from memory</td></tr>
+          <tr><td><strong>Il2CppDumper</strong> (PC) or <a href="https://il2cppdumper.com" target="_blank">il2cppdumper.com</a></td><td>Generate dump.cs from binary + metadata</td></tr>
+          <tr><td><strong>File manager</strong> (e.g., MT-Manager)</td><td>Navigate APK assets and compare file sizes</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box info" style="margin-top:12px"><span class="ni">📥</span><div>
+        <strong>Download links:</strong><br>
+        • GameGuardian: <a href="https://gameguardian.net" target="_blank">gameguardian.net</a><br>
+        • MetadataSearcher & Lib Dumper: Get from GG official website or navigate to Downloads section<br>
+        • Il2CppDumper: <a href="https://github.com/Perfare/Il2CppDumper" target="_blank">github.com/Perfare/Il2CppDumper</a>
+      </div></div>
+    </div>
+
+    <!-- ALTERNATIVE DUMPERS -->
+    <div class="step-section">
+      <h3>🧠 Alternative Dumpers (Informational)</h3>
+      <p style="color:var(--text2);font-size:.88rem;margin-bottom:12px">If the manual method fails, try these specialised tools:</p>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-icon purple">📱</div><h3>Il2cppDumpDroidGUI</h3></div>
+          <p>Android GUI for Il2CppDumper — run the dumper directly on-device without a PC.</p>
+          <a href="https://github.com/Poko-Apps/Il2cppDumpDroidGUI" target="_blank" class="resource-link" style="margin-top:8px">GitHub ↗</a>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-icon green">🔧</div><h3>Unity-Zygisk-Il2CppDumper</h3></div>
+          <p>Magisk module with Zygisk injection — dumps at process spawn time automatically.</p>
+          <a href="https://github.com/gmh5225/Unity-Zygisk-Il2CppDumper" target="_blank" class="resource-link" style="margin-top:8px">GitHub ↗</a>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-icon orange">⚡</div><h3>Auto-Il2cppDumper</h3></div>
+          <p>Automated memory dumping — handles the entire pipeline with minimal manual steps.</p>
+          <a href="https://github.com/AndnixSH/Auto-Il2cppDumper" target="_blank" class="resource-link" style="margin-top:8px">GitHub ↗</a>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-icon dark">🎮</div><h3>Il2CppGG</h3></div>
+          <p>GameGuardian integrated dumping — combine memory editing and dumping in one workflow.</p>
+          <a href="https://github.com/lethi9gg/Il2CppGG" target="_blank" class="resource-link" style="margin-top:8px">GitHub ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREREQUISITES -->
+    <div class="step-section">
+      <h3>📋 Prerequisites</h3>
+      <div class="detail-box">
+        <ul>
+          <li>Root access (Magisk recommended)</li>
+          <li>Free Fire installed (latest version)</li>
+          <li>GameGuardian installed and granted root permissions</li>
+          <li>Download <strong>MetadataSearcher.lua</strong> and <strong>LibDumper.lua</strong> from GameGuardian's website → "Scripts" section or current website's Downloads section</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- STEP 3.1 -->
+    <div class="step-section">
+      <h3>Step 3.1: Bypass Anti-Tamper (Pattern Replacement) <span class="badge orange">Optional</span></h3>
+      <ol style="padding-left:20px;font-size:.88rem;color:var(--text2);line-height:2">
+        <li>Launch Free Fire and reach the <strong>lobby screen</strong>.</li>
+        <li>Open GameGuardian (floating icon).</li>
+        <li>Select the Free Fire process (<code>com.dts.freefireth</code>).</li>
+        <li>Go to the <strong>Search</strong> tab, tap on <strong>"Hexadecimal"</strong>.</li>
+        <li>Search for this array of byte pattern:<br>
+          <code style="font-family:var(--font-mono);font-size:.82rem;background:var(--surface3);padding:4px 10px;border-radius:var(--radius-sm);display:inline-block;margin-top:4px">F0 B5 03 AF 2D E9 00 0F 83 B0 0E 46</code>
+        </li>
+        <li>When results appear, <strong>replace</strong> all occurrences with:<br>
+          <code style="font-family:var(--font-mono);font-size:.82rem;background:var(--surface3);padding:4px 10px;border-radius:var(--radius-sm);display:inline-block;margin-top:4px">00 20 70 47</code>
+        </li>
+      </ol>
+      <div class="note-box warn" style="margin-top:12px"><span class="ni">⚡</span><div>
+        <strong>Fallback patterns:</strong> If the primary pattern doesn't work, try <code style="font-family:var(--font-mono);font-size:.8rem">F0 B5 03 AF 2D E9 00 0F</code> (shorter variant).<br>
+        <strong>Cheat Engine alternative:</strong> If GameGuardian is not working for this step, use <strong>Cheat Engine</strong> instead!
+      </div></div>
+    </div>
+
+    <!-- STEP 3.2 -->
+    <div class="step-section">
+      <h3>Step 3.2: Find global-metadata.dat in Memory</h3>
+      <ol style="padding-left:20px;font-size:.88rem;color:var(--text2);line-height:2">
+        <li>Open GameGuardian again, go to the <strong>"Scripts"</strong> tab.</li>
+        <li>Execute <strong>MetadataSearcher.lua</strong>.</li>
+        <li>The script will return one or more addresses. <strong>Long-click</strong> the result → <strong>Copy</strong> the address value.</li>
+        <li>Save this address (e.g., in a text file).</li>
+        <li><strong>Long-click</strong> the same result again → select <strong>"Go to address"</strong>.</li>
+        <li>Edit the value at that address: change it from <code>0</code> to <code style="font-family:var(--font-mono);font-size:.82rem">AF 1B B1 FA r</code> (hex bytes).</li>
+      </ol>
+      <div class="note-box info" style="margin-top:12px"><span class="ni">📝</span><div><strong>Note:</strong> Sub steps 5 & 6 are sometimes required and sometimes aren't, but it is recommended to go through with them regardless.</div></div>
+    </div>
+
+    <!-- STEP 3.3 -->
+    <div class="step-section">
+      <h3>Step 3.3: Dump Memory Region</h3>
+      <ol style="padding-left:20px;font-size:.88rem;color:var(--text2);line-height:2">
+        <li>With the same address selected, tap <strong>"Dump memory"</strong>.</li>
+        <li>Set <strong>From</strong> = that address, <strong>To</strong> = the same address (the dumper will auto-expand).</li>
+        <li>Set <strong>Type</strong> to <code>Ca:</code> (custom range).</li>
+        <li>Start the dump. It will create many <code>.bin</code> files in <code>/sdcard/dumps/</code>.</li>
+      </ol>
+    </div>
+
+    <!-- STEP 3.4 -->
+    <div class="step-section">
+      <h3>Step 3.4: Identify the Real global-metadata.dat</h3>
+      <ol style="padding-left:20px;font-size:.88rem;color:var(--text2);line-height:2">
+        <li>Use a file manager with root access to navigate to:<br>
+          <code style="font-family:var(--font-mono);font-size:.8rem;background:var(--surface3);padding:4px 10px;border-radius:var(--radius-sm);display:inline-block;margin-top:4px;word-break:break-all">/data/app/com.dts.freefireth-*/base.apk/assets/bin/Data/Managed/Metadata/</code><br>
+          (or extract the APK's assets)
+        </li>
+        <li>Note the <strong>file size</strong> (in bytes) of the original <code>global-metadata</code> file.</li>
+        <li>Go to the dumped memory folder (<code>/sdcard/dumps/</code>).</li>
+        <li>Sort files by size and find the one that <strong>exactly matches</strong> the original size.</li>
+        <li>Rename that file to <code>global-metadata.dat</code> and copy it to your PC.</li>
+      </ol>
+    </div>
+
+    <!-- STEP 3.5 -->
+    <div class="step-section">
+      <h3>Step 3.5: Dump libil2cpp.so</h3>
+      <ol style="padding-left:20px;font-size:.88rem;color:var(--text2);line-height:2">
+        <li>Return to GameGuardian, run <strong>LibDumper.lua</strong>.</li>
+        <li>Select <strong>"Il2Cpp"</strong> when prompted.</li>
+        <li>The script will dump <code>libil2cpp.so</code> (or a similar named file) to storage.</li>
+        <li>Transfer this file to your PC.</li>
+      </ol>
+    </div>
+
+    <!-- STEP 3.6 -->
+    <div class="step-section">
+      <h3>Step 3.6: Run Il2CppDumper</h3>
+
+      <div class="accordion">
+        <div class="acc-item open">
+          <div class="acc-q" onclick="toggleAcc(this)">☁️ Option A: Online Dumper (Easiest) <span class="arrow">▼</span></div>
+          <div class="acc-a">
+            <ol style="padding-left:18px;line-height:2">
+              <li>Go to <a href="https://il2cppdumper.com" target="_blank"><strong>il2cppdumper.com</strong></a>.</li>
+              <li>Upload your <code>libil2cpp.so</code> (or <code>GameAssembly.dll</code> etc.) as <strong>IL2CPP Binary</strong>.</li>
+              <li>Upload your <code>global-metadata.dat</code>.</li>
+              <li>Click <strong>Dump</strong>. The server processes the files and returns a ZIP containing <code>dump.cs</code>, <code>script.json</code>, etc.</li>
+            </ol>
+          </div>
+        </div>
+        <div class="acc-item">
+          <div class="acc-q" onclick="toggleAcc(this)">💻 Option B: Command Line (Windows/Linux) <span class="arrow">▼</span></div>
+          <div class="acc-a">
+            <div class="code-block" style="margin:8px 0"><div class="code-header"><span>Bash — Il2CppDumper CLI</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre class="code-pre">Il2CppDumper.exe &lt;libil2cpp.so&gt; &lt;global-metadata.dat&gt; &lt;output_directory&gt;
+
+<span class="cm"># Example:</span>
+Il2CppDumper.exe libil2cpp.so global-metadata.dat ./dump_output</pre></div>
+          </div>
+        </div>
+        <div class="acc-item">
+          <div class="acc-q" onclick="toggleAcc(this)">🖥️ Option C: GUI Version <span class="arrow">▼</span></div>
+          <div class="acc-a">Download the GUI version of Il2CppDumper and load both files through the graphical interface. Easiest for Windows users who prefer not to use the command line.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULT -->
+    <div class="step-section">
+      <h3>✅ Result</h3>
+      <p style="color:var(--text2);font-size:.9rem;margin-bottom:12px">After successful dumping, you will obtain:</p>
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-header"><div class="card-icon purple">📄</div><h3>dump.cs</h3></div>
+          <p>C# pseudo-code with all types, methods, fields, and strings.</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-icon green">📋</div><h3>script.json</h3></div>
+          <p>Structured metadata for further programmatic analysis.</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-icon orange">🔧</div><h3>Helper Files</h3></div>
+          <p>e.g., <code>maps.txt</code> for native interop and offset mapping.</p>
+        </div>
+      </div>
+      <div class="note-box info" style="margin-top:12px"><span class="ni">📖</span><div>These files can be loaded into <strong>dnSpy</strong>, <strong>ILSpy</strong>, or any text editor to study the game's client logic.</div></div>
+    </div>
+
+    <!-- TROUBLESHOOTING -->
+    <div class="step-section">
+      <h3>🔧 Troubleshooting</h3>
+      <table class="info-table">
+        <thead><tr><th>Problem</th><th>Solution</th></tr></thead>
+        <tbody>
+          <tr><td>Game crashes after pattern replacement</td><td>Restart game and repeat steps quickly before anti-tamper re-activates</td></tr>
+          <tr><td>MetadataSearcher.lua returns no results</td><td>Ensure you performed the pattern replacement and entered the main lobby. Try different pattern offsets.</td></tr>
+          <tr><td>Dumped memory file size does not match</td><td>Try again or try to dump a slightly larger range (From = address - 0x1000, To = address + 0x1000) then search for correct size</td></tr>
+          <tr><td>Il2CppDumper fails ("invalid metadata")</td><td>You have the wrong global-metadata.dat; repeat Step 3.4 with stricter size matching</td></tr>
+          <tr><td>No <code>libil2cpp.so</code> in dump</td><td>Run LibDumper.lua as <strong>root</strong> and select the correct region. You can also copy it directly from <code>/data/app/.../lib/arm64/</code> if not protected</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TIPS -->
+    <div class="step-section">
+      <h3>💡 Tips for Success</h3>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-icon green">✅</div><h3>Recommended Setup</h3></div>
+          <ul>
+            <li>Use an <strong>emulator</strong> (LDPlayer, Nox) with rooted Android 7-9 for easier debugging</li>
+            <li>Disable all other memory scanning tools to avoid conflicts</li>
+            <li>For <strong>Android 10+</strong>, use a Magisk module like LSPosed with RootNativeBridge to bypass additional protections</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-icon orange">⚠️</div><h3>Common Pitfalls</h3></div>
+          <ul>
+            <li>If the game detects GameGuardian, hide it via <strong>MagiskHide</strong> or use Memory Editor (another tool)</li>
+            <li>Don't skip the anti-tamper bypass — it's optional but dramatically improves success rate</li>
+            <li>Always compare file sizes carefully in Step 3.4 — a wrong match = invalid dump</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- REFERENCES -->
+    <div class="step-section">
+      <h3>📚 References</h3>
+      <div class="detail-box">
+        <ul>
+          <li>Original Il2CppDumper: <a href="https://github.com/Perfare/Il2CppDumper" target="_blank">Perfare/Il2CppDumper</a></li>
+          <li>GameGuardian Lua API: <a href="https://gameguardian.net/help/" target="_blank">GameGuardian Documentation</a></li>
+          <li>Free Fire package name: <code>com.dts.freefireth</code> (Thai version) or <code>com.dts.freefire</code> (global)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- CLEANUP -->
+    <div class="note-box warn"><span class="ni">🧹</span><div><strong>Cleanup:</strong> After you have the dump, delete all memory dump files from <code>/sdcard/GG Memory/</code> to free space. <strong>Do not share the dumped files publicly</strong> — they contain copyrighted code.</div></div>
+
+    <div class="summary-box">
+      <h4>📋 Key Takeaways — Step 3</h4>
+      <ul>
+        <li>IL2CPP converts C# → C++; dumping recovers the original structure and signatures</li>
+        <li>Free Fire encrypts metadata at rest — must dump at <strong>runtime</strong> after decryption</li>
+        <li>6 sub-steps: bypass anti-tamper → find metadata → dump memory → identify file → dump libil2cpp.so → run Il2CppDumper</li>
+        <li>Alternative dumpers exist (Il2cppDumpDroidGUI, Zygisk module, Auto-Il2cppDumper, Il2CppGG) if the manual method fails</li>
+        <li>Result: <code>dump.cs</code> + <code>script.json</code> + helper files — your window into the game's client logic</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ========== STEP 4: COMING SOON ========== -->
+  <div class="step-content" id="step4">
+    <div class="coming-soon">
+      <div class="cs-icon">🔒</div>
+      <h2>Step 4: Memory Manipulation</h2>
+      <p>Coming soon — this section will cover reading/writing game memory, offset management, and feature implementation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOADS PAGE -->
+<section class="page" id="page-downloads">
+  <div class="hero" style="padding-top:32px">
+    <h1>File <span>Downloads</span></h1>
+    <p>Essential scripts, DLLs, pre-dumped files, and executables for your development workflow.</p>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title"><span class="num">1</span> GameGuardian Scripts</h2>
+    <div class="note-box info" style="margin-bottom:20px"><span class="ni">👤</span><div>All scripts listed below can be found on the GameGuardian forums by user <a href="https://gameguardian.net/forum/profile/1129048-lover1500/" target="_blank"><strong>lover1500</strong></a>.</div></div>
+    
+    <div class="grid-2">
+      <div class="card" style="display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <div class="card-header"><div class="card-icon purple">🔍</div><h3>MetadataSearcher Lua</h3></div>
+          <p>Hidden global-metadata.dat searcher script for GameGuardian. Locates the decrypted metadata in memory at runtime.</p>
+          <div style="margin-top:12px;margin-bottom:16px">
+            <span class="badge green">Current: V4 (New)</span>
+            <span class="badge orange" style="margin-left:4px">V3 (Legacy - in changelog)</span>
+          </div>
+        </div>
+        <a href="https://gameguardian.net/forum/files/file/2769-hidden-global-metadatadat-searcher/" target="_blank" class="btn-primary" style="text-align:center">Download MetadataSearcher</a>
+      </div>
+
+      <div class="card" style="display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <div class="card-header"><div class="card-icon green">📦</div><h3>LibIl2cpp Dumper Lua</h3></div>
+          <p>Script for dumping libil2cpp.so and global-metadata.dat from memory. Critical for extracting the IL2CPP binary.</p>
+          <div style="margin-top:12px;margin-bottom:16px">
+            <span class="badge orange">Current: V3</span>
+            <span class="badge green" style="margin-left:4px">V2 (Recommended)</span>
+          </div>
+        </div>
+        <a href="https://gameguardian.net/forum/files/file/2740-libil2cppso-and-metadatadat-dumping-script/" target="_blank" class="btn-primary" style="text-align:center">Download LibIl2cpp Dumper</a>
+      </div>
+
+      <div class="card" style="display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <div class="card-header"><div class="card-icon dark">🏗️</div><h3>Class Name & Field Offset Searcher</h3></div>
+          <p>Searches for class names and their corresponding field offsets in memory. Useful for navigating IL2CPP structures post-dump.</p>
+        </div>
+        <a href="https://gameguardian.net/forum/files/file/2825-class-name-and-field-offset-searcher/" target="_blank" class="btn-primary" style="text-align:center;margin-top:16px">Download Offset Searcher</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title"><span class="num">2</span> DLLs</h2>
+    <div class="placeholder-box">
+      <p style="font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:8px">No DLLs available yet</p>
+      <p>This section will contain dynamic link libraries for injection and hooking. Check back later.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title"><span class="num">3</span> Pre Dumped Files</h2>
+    <div class="placeholder-box">
+      <p style="font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:8px">No pre-dumped files available yet</p>
+      <p>This section will contain dump.cs, script.json, and map.txt files for various game versions. Check back later.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title"><span class="num">4</span> Executables</h2>
+    <div class="placeholder-box">
+      <p style="font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:8px">No executables available yet</p>
+      <p>This section will contain compiled tools, standalone injectors, and modded executables. Check back later.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-disclaimer">
+    <strong>⚠️ Disclaimer:</strong> All content on this website is strictly for educational, reverse engineering, and security research purposes only. Developing, distributing, or using unauthorized modifications violates Garena's Terms of Service and may result in permanent bans, legal action, or account termination. <strong>This website takes no responsibility for any misuse.</strong> Always operate within ethical, legal, and sandboxed research environments.
+  </div>
+</footer>
+
+<script>
+const RESOURCES_DATA = [
+  {
+    name: "Cheat Engine",
+    tags: ["Memory Scanner", "Debugger", "Windows"],
+    bonus: "An old APK also exists for Android users",
+    description: "Open-source memory scanner and debugger for Windows. Features memory scanning with multiple scan types, a debugger, disassembler, assembler, and trainer maker. Essential for finding dynamic memory addresses, pointer scanning, and structure analysis. Supports Lua scripting for automation.",
+    links: [{label: "Website", url: "https://cheatengine.org"}, {label: "APK (Malavida)", url: "https://cheat-engine.en.malavida.com/android/"}]
+  },
+  {
+    name: "GameGuardian",
+    tags: ["Memory Editor", "Android", "Lua"],
+    description: "Powerful Android memory editor and hex editor that works on rooted devices. Allows searching and modifying memory values in running apps/games in real-time. Supports Lua scripting for automated searches, pattern replacement, and memory dumping. The go-to tool for Android game modding.",
+    links: [{label: "Website", url: "https://gameguardian.net"}]
+  },
+  {
+    name: "HxD",
+    tags: ["Hex Editor", "Windows", "Disk Editor"],
+    description: "A carefully designed and fast hex editor which, additionally to raw disk editing and modifying of main memory (RAM), handles files of any size. Excellent for inspecting binary files, comparing dumps, and editing global-metadata.dat or libil2cpp.so directly.",
+    links: [{label: "Website", url: "https://mh-nexus.de/en/hxd/"}]
+  },
+  {
+    name: "IDA Pro",
+    tags: ["Disassembler", "Debugger", "Multi-platform"],
+    description: "The premier disassembler and debugger used by reverse engineers worldwide. Supports a vast array of processors and file formats. Offers deep analysis, decompilation (with Hex-Rays), and scripting capabilities. Industry standard for static analysis of native binaries.",
+    links: [{label: "Website", url: "https://hex-rays.com/ida-pro"}]
+  },
+  {
+    name: "dnSpy",
+    tags: [".NET Debugger", "Decompiler", "C#"],
+    description: "An open-source .NET debugger and assembly editor. Used to decompile, edit, and debug .NET assemblies. Essential for Unity (Mono) game modding and inspecting managed code. Allows on-the-fly C# code editing and recompilation.",
+    links: [{label: "GitHub", url: "https://github.com/dnspy/dnspy"}]
+  },
+  {
+    name: "x64dbg",
+    tags: ["Debugger", "Windows", "x64/x32"],
+    description: "An open-source x64/x32 debugger for Windows. The successor to OllyDbg. Features a modern UI, plugin system, and extensive scripting capabilities. Ideal for dynamic analysis, setting breakpoints, and tracing execution flow in native applications.",
+    links: []
+  },
+  {
+    name: "MSVS",
+    tags: ["IDE", "Compiler", "Windows"],
+    description: "Microsoft Visual Studio. The industry-standard integrated development environment (IDE) for C++, C#, and .NET development. Essential for compiling Windows applications, managing large projects, and utilizing frameworks like Qt or WinForms.",
+    links: [{label: "Website", url: "https://visualstudio.microsoft.com/"}]
+  },
+  {
+    name: "g++/gcc",
+    tags: ["Compiler", "C/C++", "Open Source"],
+    description: "The GNU Compiler Collection. Essential for compiling C and C++ source code into executable binaries. g++ specifically handles C++ compilation. Standard toolchain for system-level programming, DLL creation, and cheat development.",
+    links: [{label: "Website", url: "https://gcc.gnu.org"}]
+  },
+  {
+    name: "MinHook",
+    tags: ["Hooking Library", "C/C++", "Windows API"],
+    description: "A minimalistic Windows API hooking library. Allows intercepting function calls, modifying arguments, and altering return values. Widely used in game modding to redirect game function flows for creating internal overlays and modifying game logic.",
+    links: [{label: "GitHub", url: "https://github.com/TsudaKageyu/minhook"}]
+  },
+  {
+    name: "Process Hacker",
+    tags: ["Process Monitor", "Memory Editor", "Windows"],
+    description: "A free, powerful, multi-purpose tool that helps you monitor system resources, debug software, and detect malware. Provides deep insights into processes, services, network connections, and memory. Great for finding process IDs and managing handles.",
+    links: [{label: "SourceForge", url: "https://sourceforge.net/projects/processhacker/"}]
+  },
+  {
+    name: "GLEW",
+    tags: ["Graphics", "OpenGL", "Library"],
+    description: "The OpenGL Extension Wrangler Library. Efficiently accesses OpenGL extensions. Crucial for developing ESP overlays and rendering hooks that interact with the game's graphics pipeline via OpenGL.",
+    links: [{label: "Website", url: "https://glew.sourceforge.net"}]
+  },
+  {
+    name: "Ghidra",
+    tags: ["Decompiler", "Disassembler", "NSA"],
+    description: "A free, open-source software reverse engineering suite developed by the NSA. Offers high-quality decompilation, collaboration features, and an extensive scripting API (Java/Python). A powerful, free alternative to IDA Pro for analyzing IL2CPP binaries.",
+    links: [{label: "GitHub", url: "https://github.com/nationalsecurityagency/ghidra"}]
+  },
+  {
+    name: "Radare2",
+    tags: ["RE Framework", "CLI", "Multi-platform"],
+    description: "A free, open-source, command-line reverse engineering framework. Extremely modular and scriptable, handling forensics, disassembling, debugging, and binary analysis. Preferred by many for automated binary inspection and patching.",
+    links: [{label: "GitHub", url: "https://github.com/radareorg/radare2"}]
+  },
+  {
+    name: "Binary Ninja",
+    tags: ["RE Platform", "Decompiler", "API"],
+    description: "A modern reverse engineering platform. Known for its clean UI, high-quality intermediate language (IL), and incredibly powerful Python API for automation and analysis. Excellent for collaborative RE workflows.",
+    links: [{label: "Website", url: "https://binary.ninja"}]
+  },
+  {
+    name: "GDB",
+    tags: ["Debugger", "Linux", "CLI"],
+    description: "The GNU Project debugger. Allows seeing what happens inside a program while it executes or what it was doing at the moment it crashed. Essential for Linux-based reverse engineering and memory analysis.",
+    links: [{label: "Website", url: "https://www.gnu.org/software/gdb/gdb.html"}]
+  }
+];
+
+function renderResources() {
+  const grid = document.getElementById('resources-grid');
+  if (!grid) return;
+  grid.innerHTML = RESOURCES_DATA.map((r, i) => `
+    <div class="card resource-card">
+      <div class="rc-num">${String(i+1).padStart(2,'0')}</div>
+      <div>
+        <h3>${r.name}</h3>
+        <p>${r.description}</p>
+        <div>${r.tags.map(t => `<span class="resource-tag">${t}</span>`).join('')}${r.bonus ? `<span class="resource-bonus">⭐ ${r.bonus}</span>` : ''}</div>
+        ${r.links && r.links.length > 0 ? `<div style="margin-top:8px">${r.links.map(l => `<a href="${l.url}" target="_blank" class="resource-link">${l.label} ↗</a>`).join('')}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+document.querySelectorAll('.nav-link').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('page-' + btn.dataset.page);
+    if (target) target.classList.add('active');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  });
+});
+
+document.querySelectorAll('.step-btn:not(.disabled)').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(btn.dataset.step);
+    if (target) target.classList.add('active');
+    const currentLang = document.querySelector('.lang-btn.active')?.dataset.lang || 'cpp';
+    applyLanguage(currentLang);
+    updateLangToggleVisibility(btn.dataset.step);
+  });
+});
+
+function applyLanguage(lang) {
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  document.querySelectorAll('.lang-content').forEach(c => {
+    c.classList.toggle('active', c.dataset.lang === lang);
+  });
+}
+
+function updateLangToggleVisibility(stepId) {
+  const wrapper = document.getElementById('lang-toggle-wrapper');
+  if (stepId === 'step3') {
+    wrapper.style.opacity = '0.3';
+    wrapper.style.pointerEvents = 'none';
+  } else {
+    wrapper.style.opacity = '1';
+    wrapper.style.pointerEvents = 'auto';
+  }
+}
+
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    applyLanguage(btn.dataset.lang);
+  });
+});
+
+function toggleAcc(el) {
+  const item = el.parentElement;
+  const wasOpen = item.classList.contains('open');
+  item.parentElement.querySelectorAll('.acc-item').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('.code-pre');
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderResources();
+  applyLanguage('cpp');
+  updateLangToggleVisibility('step1');
+});
+</script>
+</body>
+</html>
+
