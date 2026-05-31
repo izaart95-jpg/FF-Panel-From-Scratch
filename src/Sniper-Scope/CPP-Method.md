@@ -16,7 +16,7 @@ You have two source files to choose from. The `Debug.cpp` version is recommended
 | `Main.cpp` | [Download](https://raw.githubusercontent.com/izaart95-jpg/FF-Panel-From-Scratch/refs/heads/main/src/Memory/cpp/Main.cpp) |
 | `Debug.cpp` (Recommended) | [Download](https://raw.githubusercontent.com/izaart95-jpg/FF-Panel-From-Scratch/refs/heads/main/src/Memory/cpp/Debug.cpp) |
 
-**Proceed with `Debug.cpp` for this guide.**
+**Im proceeding with `Debug.cpp` for this guide.**
 
 ## Step 2: Dump Il2cpp and Find `initbase`
 
@@ -59,6 +59,7 @@ In either `Main.cpp` or `Debug.cpp`, locate and modify these two variables:
 static std::string originalBytes = "";
 static std::string patchedBytes  = "";
 ```
+Then compile the code and run the exeutable
 
 ### Important:
 - The fewer bytes you modify, the smaller the signature footprint, which reduces the chance of detection.
