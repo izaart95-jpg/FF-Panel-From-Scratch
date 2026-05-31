@@ -7,17 +7,17 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace MainMem
+namespace FastMemory
 {
     class Program
     {
-        static string originalBytes = "9A 99 99 3E FF FF FF FF 08 00 00 00 00 00 60 40 CD CC 8C 3F 8F C2 F5 3C CD CC CC 3D 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 80 3F 33 33 13 40 00 00 B0 3F 00 00 80 3F 01";
-        static string patchedBytes = "9A 99 99 3E FF FF FF FF 08 00 00 00 00 00 60 40 CD CC 8C 3F 8F C2 F5 3C CD CC CC 3D 06 00 00 00 00 00 19 3F 00 00 00 00 00 00 00 00 00 00 00 00 00 00 80 3F 33 33 13 40 00 00 B0 3F 00 00 80 3F 01";
+        static string originalBytes = "";
+        static string patchedBytes = "";
         static INTERNAL mem = new INTERNAL();
 
         static void Main(string[] args)
         {
-            Console.WriteLine("CSHARP Console (64-bit)");
+            Console.WriteLine("C# Console (64-bit)");
             Console.WriteLine("Commands: pid <id> | name <exe> | inject | exit");
 
             while (true)
