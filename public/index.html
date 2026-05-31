@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevPanel Guide — Universal Development Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;600;700&family=PT+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#111111;--secondary:#8B5CF6;--success:#16A34A;--warning:#D97706;--danger:#DC2626;
+  --surface:#FFFFFF;--surface2:#F9FAFB;--surface3:#F3F4F6;--text:#111827;--text2:#6B7280;
+  --border:#E5E7EB;--border2:#D1D5DB;
+  --radius-sm:4px;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;
+  --font-display:'Montserrat',sans-serif;--font-body:'Roboto',sans-serif;--font-mono:'PT Mono',monospace;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.05);--shadow-md:0 4px 6px -1px rgba(0,0,0,.07),0 2px 4px -2px rgba(0,0,0,.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,.08),0 4px 6px -4px rgba(0,0,0,.04);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);color:var(--text);background:var(--surface);line-height:1.7;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.018;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+::selection{background:rgba(139,92,246,.2);color:var(--primary)}
+a{color:var(--secondary);text-decoration:none}a:hover{text-decoration:underline}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-display);font-weight:700;line-height:1.3;color:var(--primary)}
+
+nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 32px}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}
+.nav-brand{font-family:var(--font-display);font-weight:800;font-size:1.15rem;color:var(--primary);display:flex;align-items:center;gap:8px;cursor:default}
+.nav-brand svg{width:22px;height:22px;color:var(--secondary)}
+.nav-links{display:flex;gap:4px}
+.nav-link{font-family:var(--font-body);font-weight:500;font-size:.9rem;padding:8px 16px;border-radius:var(--radius-md);cursor:pointer;color:var(--text2);transition:all .2s;border:none;background:none}
+.nav-link:hover{color:var(--primary);background:var(--surface3)}
+.nav-link.active{color:var(--secondary);background:rgba(139,92,246,.08);font-weight:600}
+.nav-link:focus-visible{outline:2px solid var(--secondary);outline-offset:2px}
+
+.page{display:none;max-width:1200px;margin:0 auto;padding:32px 24px 64px}
+.page.active{display:block;animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.disclaimer-banner{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:1px solid #F59E0B;border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:32px;display:flex;gap:12px;align-items:flex-start}
+.disclaimer-banner .icon{font-size:1.4rem;flex-shrink:0;margin-top:2px}
+.disclaimer-banner p{font-size:.88rem;color:#92400E;line-height:1.6}
+.disclaimer-banner strong{color:#78350F}
+
+.hero{padding:48px 0 40px;border-bottom:1px solid var(--border);margin-bottom:40px}
+.hero h1{font-size:2.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:8px}
+.hero h1 span{color:var(--secondary)}
+.hero p{font-size:1.05rem;color:var(--text2);max-width:640px;line-height:1.7}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;transition:all .2s}
+.card:hover{border-color:var(--border2);box-shadow:var(--shadow-md)}
+.card-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.card-icon{width:36px;height:36px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.card-icon.purple{background:rgba(139,92,246,.1);color:var(--secondary)}
+.card-icon.green{background:rgba(22,163,74,.1);color:var(--success)}
+.card-icon.orange{background:rgba(217,119,6,.1);color:var(--warning)}
+.card-icon.red{background:rgba(220,38,38,.1);color:var(--danger)}
+.card-icon.dark{background:rgba(17,17,17,.08);color:var(--primary)}
+.card h3{font-size:1rem;font-weight:700}
+.card p,.card ul{font-size:.88rem;color:var(--text2);line-height:1.65}
+.card ul{padding-left:18px;margin-top:6px}
+.card ul li{margin-bottom:3px}
+
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+@media(max-width:900px){.grid-3,.grid-4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+
+.section{margin-bottom:48px}
+.section-title{font-size:1.4rem;font-weight:800;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid var(--border)}
+.section-title .num{color:var(--secondary);font-weight:900;margin-right:8px}
+
+.meta-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:32px}
+.meta-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px 16px}
+.meta-label{font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:4px}
+.meta-value{font-weight:600;font-size:.92rem;color:var(--primary)}
+
+.toc{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:32px}
+.toc h3{font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);margin-bottom:12px;font-weight:700}
+.toc-list{list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+.toc-list a{font-size:.85rem;padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text);transition:all .15s;display:inline-block}
+.toc-list a:hover{border-color:var(--secondary);color:var(--secondary);text-decoration:none}
+
+.resource-card{display:flex;gap:16px;padding:20px}
+.resource-card .rc-num{font-family:var(--font-mono);font-size:.75rem;color:var(--text2);flex-shrink:0;margin-top:2px}
+.resource-card h3{font-size:1rem;margin-bottom:6px}
+.resource-card p{font-size:.85rem;color:var(--text2);line-height:1.65}
+.resource-tag{display:inline-block;font-family:var(--font-mono);font-size:.7rem;padding:2px 8px;border-radius:var(--radius-sm);background:rgba(139,92,246,.08);color:var(--secondary);margin-right:4px;margin-top:6px}
+.resource-bonus{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:var(--radius-sm);background:rgba(217,119,6,.08);color:var(--warning);margin-top:6px}
+.resource-link{display:inline-block;font-size:.8rem;font-weight:600;color:var(--secondary);margin-right:10px;margin-top:8px;text-decoration:none}
+.resource-link:hover{text-decoration:underline}
+
+.tut-header{margin-bottom:32px}
+.tut-note{background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.2);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:24px;font-size:.88rem;color:#5B21B6;line-height:1.6}
+
+.step-nav{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap}
+.step-btn{font-family:var(--font-display);font-weight:700;font-size:.85rem;padding:10px 20px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;transition:all .2s}
+.step-btn:hover{border-color:var(--secondary);color:var(--secondary)}
+.step-btn.active{background:var(--secondary);color:white;border-color:var(--secondary)}
+.step-btn.disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+.step-btn:focus-visible{outline:2px solid var(--secondary);outline-offset:2px}
+
+.lang-toggle{display:inline-flex;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:24px}
+.lang-btn{font-family:var(--font-mono);font-size:.82rem;font-weight:700;padding:8px 20px;border:none;cursor:pointer;background:var(--surface);color:var(--text2);transition:all .2s}
+.lang-btn:hover{background:var(--surface3)}
+.lang-btn.active{background:var(--primary);color:white}
+.lang-btn:focus-visible{outline:2px solid var(--secondary);outline-offset:-2px}
+
+.step-content{display:none}.step-content.active{display:block;animation:fadeUp .3s ease}
+.lang-content{display:none}.lang-content.active{display:block}
+
+.code-block{background:#1E1E2E;border-radius:var(--radius-lg);margin:16px 0;overflow:hidden}
+.code-header{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;background:rgba(0,0,0,.3);font-family:var(--font-mono);font-size:.72rem;color:#A6ADC8}
+.code-copy{font-family:var(--font-mono);font-size:.72rem;padding:3px 10px;border-radius:var(--radius-sm);background:rgba(255,255,255,.08);color:#A6ADC8;border:1px solid rgba(255,255,255,.1);cursor:pointer;transition:all .15s}
+.code-copy:hover{background:rgba(255,255,255,.15);color:white}
+.code-pre{padding:16px 20px;overflow-x:auto;font-family:var(--font-mono);font-size:.82rem;line-height:1.75;color:#CDD6F4}
+.code-pre .kw{color:#CBA6F7}.code-pre .fn{color:#89B4FA}.code-pre .str{color:#A6E3A1}.code-pre .cm{color:#6C7086;font-style:italic}.code-pre .num{color:#FAB387}.code-pre .type{color:#F9E2AF}.code-pre .dir{color:#F38BA8}
+
+.accordion{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin:16px 0}
+.acc-item{border-bottom:1px solid var(--border)}.acc-item:last-child{border-bottom:none}
+.acc-q{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;cursor:pointer;font-weight:600;font-size:.9rem;background:var(--surface2);transition:background .15s;gap:12px}
+.acc-q:hover{background:var(--surface3)}
+.acc-q .arrow{transition:transform .25s;font-size:.75rem;color:var(--text2);flex-shrink:0}
+.acc-item.open .acc-q .arrow{transform:rotate(180deg)}
+.acc-a{display:none;padding:16px 20px;font-size:.88rem;color:var(--text2);line-height:1.7;border-top:1px solid var(--border)}
+.acc-item.open .acc-a{display:block}
+
+.summary-box{background:linear-gradient(135deg,rgba(139,92,246,.04),rgba(139,92,246,.08));border:1px solid rgba(139,92,246,.15);border-radius:var(--radius-lg);padding:20px 24px;margin:24px 0}
+.summary-box h4{font-size:.85rem;text-transform:uppercase;letter-spacing:.04em;color:var(--secondary);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.summary-box ul{padding-left:18px;font-size:.88rem;color:var(--text2)}
+.summary-box li{margin-bottom:4px;line-height:1.6}
+
+.detail-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 24px;margin:16px 0}
+.detail-box h4{font-size:.92rem;margin-bottom:8px}
+.detail-box p,.detail-box ul{font-size:.86rem;color:var(--text2);line-height:1.7}
+.detail-box ul{padding-left:18px;margin-top:4px}
+
+.step-section{margin-bottom:36px}
+.step-section h3{font-size:1.15rem;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.step-section h4{font-size:.95rem;margin:16px 0 8px;color:var(--primary)}
+
+.info-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.85rem}
+.info-table th{text-align:left;padding:10px 14px;background:var(--surface3);font-weight:600;border:1px solid var(--border);font-size:.8rem;text-transform:uppercase;letter-spacing:.03em;color:var(--text2)}
+.info-table td{padding:10px 14px;border:1px solid var(--border);color:var(--text)}
+.info-table code{font-family:var(--font-mono);font-size:.8rem;background:var(--surface3);padding:1px 6px;border-radius:var(--radius-sm)}
+
+.note-box{display:flex;gap:10px;padding:14px 18px;border-radius:var(--radius-md);margin:16px 0;font-size:.86rem;line-height:1.6}
+.note-box.info{background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.15);color:#5B21B6}
+.note-box.warn{background:rgba(217,119,6,.06);border:1px solid rgba(217,119,6,.15);color:#92400E}
+.note-box.danger{background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.15);color:#991B1B}
+.note-box .ni{flex-shrink:0;font-size:1rem}
+
+.coming-soon{text-align:center;padding:80px 24px}
+.coming-soon h2{font-size:1.8rem;color:var(--text2);margin-bottom:12px}
+.coming-soon p{color:var(--text2);font-size:1rem}
+.coming-soon .cs-icon{font-size:3rem;margin-bottom:16px;opacity:.3}
+
+footer{background:var(--primary);color:rgba(255,255,255,.6);padding:32px 24px;text-align:center;font-size:.82rem;margin-top:48px}
+footer a{color:rgba(255,255,255,.8)}
+footer .footer-disclaimer{max-width:700px;margin:0 auto;line-height:1.7}
+
+.badge{display:inline-block;font-family:var(--font-mono);font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:var(--radius-sm);text-transform:uppercase;letter-spacing:.04em}
+.badge.purple{background:rgba(139,92,246,.1);color:var(--secondary)}
+.badge.green{background:rgba(22,163,74,.1);color:var(--success)}
+.badge.orange{background:rgba(217,119,6,.1);color:var(--warning)}
+.badge.red{background:rgba(220,38,38,.1);color:var(--danger)}
+
+.btn-primary{display:inline-block;font-family:var(--font-display);font-weight:600;font-size:.85rem;padding:10px 20px;border-radius:var(--radius-md);background:var(--secondary);color:white;border:none;cursor:pointer;transition:all .2s;text-decoration:none}
+.btn-primary:hover{background:#7C3AED;color:white;text-decoration:none}
+
+.placeholder-box{border:2px dashed var(--border2);border-radius:var(--radius-lg);padding:60px 20px;text-align:center;color:var(--text2);background:var(--surface2)}
+
+@media(max-width:768px){
+  .hero h1{font-size:1.7rem}
+  .page{padding:20px 16px 48px}
+  .meta-grid{grid-template-columns:repeat(2,1fr)}
+  .step-nav{gap:6px}
+  .step-btn{padding:8px 14px;font-size:.8rem}
+}
+@media(max-width:480px){
+  .meta-grid{grid-template-columns:1fr}
+  .nav-links{gap:2px}
+  .nav-link{padding:6px 10px;font-size:.82rem}
+}
+html{scroll-behavior:smooth}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      DevPanel Guide
+    </div>
+    <div class="nav-links">
+      <button class="nav-link active" data-page="dashboard">Dashboard</button>
+      <button class="nav-link" data-page="resources">Tools</button>
+      <button class="nav-link" data-page="tutorial">Tutorial</button>
+      <button class="nav-link" data-page="downloads">Downloads</button>
+    </div>
+  </div>
+</nav>
+
+<!-- DASHBOARD PAGE -->
+<section class="page active" id="page-dashboard">
+  <div class="hero">
+    <h1>Free Fire <span>External</span> Cheat & Panel Development Guide</h1>
+    <p>A comprehensive reference for understanding external modification architecture, memory interaction, anti-cheat analysis, and panel development — built for researchers and developers.</p>
+  </div>
+
+  <div class="disclaimer-banner">
+    <span class="icon">⚠️</span>
+    <p><strong>Disclaimer:</strong> This document is strictly for educational, reverse engineering, and security research purposes only. Developing, distributing, or using unauthorized modifications violates Garena's Terms of Service and may result in permanent bans, legal action, or account termination. This website takes <strong>no responsibility</strong> for any misuse of the information provided. Always operate within ethical, legal, and sandboxed research environments.</p>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title"><span class="num">●</span> Project Metadata</h2>
+    <div class="meta-grid">
+      <div class="meta-item"><div class="meta-label">Game</div><div class="meta-value">Free Fire</div></div>
+      <div class="meta-item"><div class="meta-label">Developer</div><div class="meta-value">111dotsStudio / Garena</div></div>
+      <div class="meta-item"><div class="meta-label">Engine</div><div class="meta-value">Unity</div></div>
+      <div class="meta-item"><div class="meta-label">Release Year</div><div class="meta-value">2017</div></div>
+      <div class="meta-item"><div class="meta-label">Target Platform</div><div class="meta-value">Windows (PC/Emulator)</div></div>
+      <div class="meta-item"><div class="meta-label">Architecture</div><div class="meta-value">64-bit (Primary), ARM</div></div>
+      <div class="meta-item"><div class="meta-label">Network Model</div><div class="meta-value">Client-Server Authoritative</div></div>
+      <div class="meta-item"><div class="meta-label">Anti-Cheat</div><div class="meta-value">Proprietary Garena AC + Server Validation</div></div>
+    </div>
+  </div>
+
+  <div class="toc">
+    <h3>Quick Navigation</h3>
+    <div class="toc-list">
+      <a href="#dash-arch">Architecture & Core</a>
+      <a href="#dash-panel">Panel Structure</a>
+      <a href="#dash-mem">Memory Interaction</a>
+      <a href="#dash-esp">ESP & Aimbot</a>
+      <a href="#dash-ac">Anti-Cheat Analysis</a>
+      <a href="#dash-maint">Maintenance</a>
+      <a href="#dash-perf">Performance</a>
+    </div>
+  </div>
+
+  <div class="section" id="dash-arch">
+    <h2 class="section-title"><span class="num">1</span> Architecture & Core Concepts</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-icon purple">🔄</div><h3>Internal Modifications</h3></div>
+        <p>Cheat code is directly saved in the game's static files space. Injected into the process — easier detection but full access to game internals.</p>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon green">📡</div><h3>External Modifications</h3></div>
+        <p>Sit separately from the game and use Windows API features (or kernel drivers) to read/write memory data. Harder to detect, but limited to memory operations.</p>
+      </div>
+    </div>
+    <div class="note-box info" style="margin-top:16px"><span class="ni">💡</span><div><strong>Server-Side Limits:</strong> Damage calculation, loot distribution, and physics are validated server-side. External tools cannot bypass authoritative mechanics.</div></div>
+    <div class="note-box warn"><span class="ni">⚡</span><div><strong>Unity-Specific:</strong> Mono/IL2CPP structure, managed object layouts, and native-to-managed bridges require offset translation.</div></div>
+  </div>
+
+  <div class="section" id="dash-panel">
+    <h2 class="section-title"><span class="num">2</span> Panel Structure & Technology Stack</h2>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-header"><div class="card-icon dark">💻</div><h3>Language</h3></div>
+        <ul>
+          <li><strong>C++:</strong> Low-level API, minimal overhead, direct Win32/DirectX</li>
+          <li><strong>C#:</strong> Faster UI dev with WinForms/WPF/ImGui.NET</li>
+          <li><strong>Rust:</strong> Memory safety, zero-cost abstractions</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon purple">🎨</div><h3>User Interface</h3></div>
+        <ul>
+          <li><strong>GUI:</strong> ImGui, Qt, WinUI, custom D2D renderers</li>
+          <li><strong>TUI:</strong> Terminal dashboards for headless operation</li>
+          <li><strong>Overlay:</strong> WS_EX_LAYERED, topmost alpha window</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon green">🔐</div><h3>Auth & Licensing</h3></div>
+        <ul>
+          <li><strong>HWID Binding:</strong> CPU, Mobo, Disk, MAC fingerprinting</li>
+          <li><strong>Token System:</strong> JWT/OAuth2 with refresh rotation</li>
+          <li><strong>Framework:</strong> KeyAuth, Auth.gg, custom backend</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="dash-mem">
+    <h2 class="section-title"><span class="num">3</span> Memory Interaction & Pattern Scanning</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-icon orange">🔍</div><h3>Reading Techniques</h3></div>
+        <ul>
+          <li><strong>ReadProcessMemory (RPM):</strong> Standard Win32 API</li>
+          <li><strong>Vectorized Scanning:</strong> SIMD (SSE/AVX) byte comparison</li>
+          <li><strong>Pointer Chaining:</strong> Base + offsets → nested structures</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon red">🛠️</div><h3>Offset Discovery Tools</h3></div>
+        <ul>
+          <li>Cheat Engine — Memory browsing, structure dissect</li>
+          <li>ReClass.NET — Live class reconstruction</li>
+          <li>x64dbg / WinDbg — Instruction tracing, breakpoints</li>
+          <li>Ghidra / IDA Pro — Static analysis of IL2CPP/Mono</li>
+        </ul>
+      </div>
+    </div>
+    <div class="code-block" style="margin-top:16px">
+      <div class="code-header"><span>C++ — Pattern Scan Example</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+      <pre class="code-pre"><span class="kw">auto</span> pattern = <span class="str">"48 8B 05 ?? ?? ?? ?? 48 89 03"</span>;
+<span class="kw">auto</span> base = <span class="fn">ScanProcess</span>(pid, pattern);
+<span class="kw">auto</span> entity_ptr = <span class="fn">Read</span>&lt;<span class="type">uintptr_t</span>&gt;(base + offset_chain[<span class="num">0</span>]);</pre>
+    </div>
+  </div>
+
+  <div class="section" id="dash-esp">
+    <h2 class="section-title"><span class="num">4</span> Feature Implementation (ESP & Aimbot)</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-icon purple">👁️</div><h3>ESP Pipeline</h3></div>
+        <ul>
+          <li>World-to-Screen Matrix from Unity Camera</li>
+          <li>Filtering: Team ID, health &gt; 0, distance, line-of-sight</li>
+          <li>Rendering: D2D/ImGui boxes, skeleton, health bars, tags</li>
+          <li>Optimization: Cache entity list, skip off-screen</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon red">🎯</div><h3>Aimbot Mechanics</h3></div>
+        <ul>
+          <li>Target Selection: FOV cone, closest to crosshair, priority</li>
+          <li>Smoothing: Linear interpolation (lerp) for human movement</li>
+          <li>Prediction: Velocity compensation for projectile/movement</li>
+          <li>Input: SendInput (user-mode) or kernel mouse driver</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note-box warn"><span class="ni">📝</span><div><strong>Note:</strong> Server-side hit registration validates trajectory. Over-aggressive aim values trigger heuristic detection.</div></div>
+  </div>
+
+  <div class="section" id="dash-ac">
+    <h2 class="section-title"><span class="num">5</span> Anti-Cheat Analysis & Evasion Hygiene</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-icon red">🚨</div><h3>Detection Vectors</h3></div>
+        <ul>
+          <li>Handle Enumeration — OpenProcess flags monitored</li>
+          <li>Window Enumeration — Overlay class names, titles</li>
+          <li>Input Timing — Perfect micro-adjustments flagged</li>
+          <li>Signature Scanning — Known libraries, strings</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon green">🛡️</div><h3>Mitigation Strategies</h3></div>
+        <ul>
+          <li>Anti-Debug: IsDebuggerPresent, PEB flags checks</li>
+          <li>String Encryption: Compile-time obfuscation</li>
+          <li>Dynamic Naming: Randomize window titles, threads</li>
+          <li>Sandbox Testing: Validate against VMs and heuristics</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="dash-maint">
+    <h2 class="section-title"><span class="num">6</span> Maintenance, Updates & Distribution</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-icon orange">🔄</div><h3>Update Workflow</h3></div>
+        <ul>
+          <li>Automated Pattern Scanner — fallback signatures</li>
+          <li>Version Control — Git + semantic versioning</li>
+          <li>Cloud Sync — Encrypted JSON/YAML configs</li>
+          <li>Rollback — Fallback to last known working offsets</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon dark">📦</div><h3>Distribution</h3></div>
+        <ul>
+          <li>Stub Loader — Decryptor + memory execution</li>
+          <li>HWID Locking — Server-side validation before unlock</li>
+          <li>Telemetry Dashboard — Crash reports, offset health</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="dash-perf">
+    <h2 class="section-title"><span class="num">7</span> Performance Optimization & Best Practices</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-icon green">⚡</div><h3>Optimization</h3></div>
+        <ul>
+          <li>Render Loop: Cap overlay FPS, batch draw calls</li>
+          <li>Memory Caching: Reduce RPM calls per frame</li>
+          <li>Thread Pool: Separate scanning, input, and UI threads</li>
+          <li>Error Handling: Graceful fallbacks on process detach</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon purple">🏗️</div><h3>Code Architecture</h3></div>
+        <ul>
+          <li>Modular Design: Decouple core, renderer, memory, auth</li>
+          <li>Config-Driven: Toggle features via JSON/TOML</li>
+          <li>Logging: Structured JSON logs with rotation</li>
+          <li>Unit Testing: Validate math, pattern matchers offline</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESOURCES PAGE -->
+<section class="page" id="page-resources">
+  <div class="hero" style="padding-top:32px">
+    <h1>Tool <span>Resources</span></h1>
+    <p>Essential tools for reverse engineering, memory analysis, debugging, and development. Each tool includes descriptions, use cases, and relevant links.</p>
+  </div>
+  <div class="grid-2" id="resources-grid">
+    <!-- Populated by JS -->
+  </div>
+</section>
+
+<!-- TUTORIAL PAGE -->
+<section class="page" id="page-tutorial">
+  <div class="tut-header">
+    <h1 style="font-size:2rem;font-weight:900;margin-bottom:8px">Hands-On <span style="color:var(--secondary)">Tutorial</span></h1>
+    <p style="color:var(--text2);max-width:640px;line-height:1.7">Step-by-step practical guide from UI creation to memory dumping. Follow along in C++ or C# — the logic translates to any language.</p>
+  </div>
+
+  <div class="tut-note">
+    <strong>📌 Important Notes:</strong><br>
+    • Low-level languages (C/C++) are recommended for maximum control, but <strong>any language works</strong> — only the logic differs.<br>
+    • This tutorial uses <strong>C++ and C# examples only</strong>. Use the language toggle below.<br>
+    • We don't cover every single detail (it would be overwhelming). <strong>Search online if you're stuck</strong> — that's part of learning.<br>
+    • Don't be a skid and copy-paste. <strong>Learn from it.</strong> Build your own best version.
+  </div>
+
+  <div class="step-nav">
+    <button class="step-btn active" data-step="step1">Step 1: GUI</button>
+    <button class="step-btn" data-step="step2">Step 2: Auth</button>
+    <button class="step-btn" data-step="step3">Step 3: IL2CPP Dump</button>
+    <button class="step-btn disabled" data-step="step4">Step 4: Coming Soon</button>
+  </div>
+
+  <div style="margin-bottom:24px">
+    <span style="font-family:var(--font-mono);font-size:.78rem;color:var(--text2);margin-right:8px">LANGUAGE:</span>
+    <div class="lang-toggle">
+      <button class="lang-btn active" data-lang="cpp">C++</button>
+      <button class="lang-btn" data-lang="csharp">C#</button>
+    </div>
+  </div>
+
+  <!-- STEP 1: GUI -->
+  <div class="step-content active" id="step1">
+    <h2 style="font-size:1.5rem;margin-bottom:8px">Step 1: Professional Panel UI Development</h2>
+    <p style="color:var(--text2);margin-bottom:24px;font-size:.92rem">Build a modern, visually appealing panel UI for your desktop application.</p>
+
+    <div class="accordion" style="margin-bottom:24px">
+      <div class="acc-item">
+        <div class="acc-q" onclick="toggleAcc(this)">❓ Why does the UI matter? Isn't it just about functionality? <span class="arrow">▼</span></div>
+        <div class="acc-a">A good UI improves usability, reduces errors, and makes your tool professional. While functionality is king, a clean interface helps you navigate features quickly. It also matters for distribution — people trust polished software.</div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-q" onclick="toggleAcc(this)">❓ Should I use GUI or TUI? <span class="arrow">▼</span></div>
+        <div class="acc-a">It depends on your use case. GUI (ImGui, Qt, WinForms) is better for visual overlays and user-friendly panels. TUI (Spectre.Console, ncurses) is great for headless servers or quick tools. Many devs use both — TUI for backend/debug and GUI for the main panel.</div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-q" onclick="toggleAcc(this)">❓ What if I want to skip UI entirely? <span class="arrow">▼</span></div>
+        <div class="acc-a">You absolutely can! A console application that runs silently in the background is perfectly valid. This step is here for those who want it — skip to Step 2 if UI isn't your priority.</div>
+      </div>
+    </div>
+
+    <div class="lang-content active" data-lang="cpp">
+      <h3 style="margin-bottom:4px">Qt Framework GUI Application</h3>
+      <p style="color:var(--text2);font-size:.88rem;margin-bottom:16px">Cross-platform desktop application with login system and main UI panel. Alternative: ImGui.</p>
+      <div class="detail-box"><h4>🛠️ Tools & Libraries</h4><p>Qt Creator (or VS + Qt tools) • Qt Widgets Module • Qt Designer (.ui files) • QSS (Qt Style Sheets)</p></div>
+      
+      <div class="step-section">
+        <h4>Implementation Steps</h4>
+        <ol style="padding-left:20px;font-size:.88rem;color:var(--text2);line-height:2">
+          <li>Install Qt and Qt Creator. Create a new <strong>Qt Widgets Application</strong> project.</li>
+          <li>Design the Login Dialog: Use <code>QDialog</code>, add <code>QLineEdit</code> for username/password, <code>QPushButton</code> for login.</li>
+          <li>In the login logic, check credentials. Emit <code>accepted()</code> signal upon success.</li>
+          <li>Create the Main Window (<code>QMainWindow</code>) with <code>QStackedWidget</code> for multi-page content.</li>
+          <li>Apply modern style sheets: border-radius on buttons, background gradients, hover effects.</li>
+          <li>After successful login, hide the login dialog and show the main window.</li>
+          <li>Implement main UI panels: dashboard with <code>QChart</code>/<code>QTableView</code>, side menu with categories.</li>
+          <li>Use layouts (<code>QVBoxLayout</code>, <code>QHBoxLayout</code>, <code>QGridLayout</code>) to organize controls.</li>
+          <li>Add dynamic content switching: connect menu buttons to change central widget index on <code>QStackedWidget</code>.</li>
+          <li>Handle shutdown, save preferences, add window animations (<code>QPropertyAnimation</code>).</li>
+        </ol>
+      </div>
+
+      <div class="step-section">
+        <h4>🔗 Attaching Buttons & UI to Code (Event Wiring)</h4>
+        <div class="detail-box"><h4>Method 1: Qt Designer (No Code)</h4><p>Open your <code>.ui</code> file in Qt Designer → Right-click a button → <strong>"Go to slot…"</strong> → Select <code>clicked()</code> → Qt auto-generates the slot function. Just fill in the logic.</p></div>
+        <div class="detail-box"><h4>Method 2: Manual connect()</h4>
+          <div class="code-block" style="margin:8px 0"><div class="code-header"><span>C++ — Signal/Slot Connection</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre class="code-pre"><span class="cm">// In constructor after setupUi:</span>
+<span class="fn">connect</span>(ui-&gt;btnAimbot, &amp;QPushButton::clicked, <span class="kw">this</span>, [&amp;]() {
+    aimbotEnabled = !aimbotEnabled;
+    ui-&gt;btnAimbot-&gt;<span class="fn">setText</span>(aimbotEnabled ? <span class="str">"Aimbot: ON"</span> : <span class="str">"Aimbot: OFF"</span>);
+    ui-&gt;btnAimbot-&gt;<span class="fn">setStyleSheet</span>(aimbotEnabled ? <span class="str">"background-color: #16A34A;"</span> : <span class="str">"background-color: #DC2626;"</span>);
+});
+
+<span class="cm">// Slider to value label</span>
+<span class="fn">connect</span>(ui-&gt;fovSlider, &amp;QSlider::valueChanged, <span class="kw">this</span>, [&amp;](<span class="type">int</span> val) {
+    ui-&gt;fovLabel-&gt;<span class="fn">setText</span>(<span class="str">"FOV: "</span> + QString::number(val));
+    config.fov = val;
+});</pre></div>
+        </div>
+      </div>
+      <div class="note-box info"><span class="ni">✨</span><div><strong>Design Tip:</strong> Use QSS for modern flat UI. Example: <code>QPushButton { background-color: #3498db; border-radius: 5px; padding: 8px; } QPushButton:hover { background-color: #2980b9; }</code>. Add shadows with <code>QGraphicsDropShadowEffect</code>.</div></div>
+    </div>
+
+    <div class="lang-content" data-lang="csharp">
+      <h3 style="margin-bottom:4px">Windows Forms Application (.NET Framework)</h3>
+      <p style="color:var(--text2);font-size:.88rem;margin-bottom:16px">Modern panel UI using WinForms with Guna/Siticone UI libraries. Also includes Spectre.Console for TUI approach.</p>
+      
+      <div class="detail-box"><h4>🛠️ Tools & Libraries</h4><p>Visual Studio 2022 • Guna.UI2 WinForms (NuGet) • Siticone.Desktop.UI (NuGet) • Built-in Toolbox Controls</p></div>
+
+      <div class="step-section">
+        <h4>🔗 Attaching Buttons & UI to Code (Event Wiring)</h4>
+        <div class="detail-box"><h4>Method 1: Double-Click (Fastest)</h4><p>In the Visual Studio Designer, <strong>double-click</strong> any button. VS auto-generates a click event handler. Just write your logic inside.</p></div>
+        <div class="detail-box"><h4>Method 2: Properties Panel → Events Tab</h4><p>Select a control → In Properties, click the <strong>⚡ lightning bolt</strong> → Find the event (e.g., <code>Click</code>) → Double-click to generate handler.</p></div>
+        <div class="detail-box"><h4>Method 3: Manual Code Wiring</h4>
+          <div class="code-block" style="margin:8px 0"><div class="code-header"><span>C# — Manual Event Subscription</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre class="code-pre"><span class="cm">// In constructor after InitializeComponent():</span>
+btnAimbot.Click += <span class="fn">BtnAimbot_Click</span>;
+fovSlider.ValueChanged += <span class="fn">FovSlider_Changed</span>;
+
+<span class="kw">private void</span> <span class="fn">BtnAimbot_Click</span>(<span class="type">object</span> sender, EventArgs e)
+{
+    aimbotEnabled = !aimbotEnabled;
+    btnAimbot.Text = aimbotEnabled ? <span class="str">"Aimbot: ON"</span> : <span class="str">"Aimbot: OFF"</span>;
+    btnAimbot.FillColor = aimbotEnabled ? Color.<span class="fn">FromArgb</span>(<span class="num">22</span>, <span class="num">163</span>, <span class="num">74</span>) : Color.<span class="fn">FromArgb</span>(<span class="num">220</span>, <span class="num">38</span>, <span class="num">38</span>);
+}</pre></div>
+        </div>
+        <div class="detail-box"><h4>Method 4: Lambda (Inline, Quick)</h4>
+          <div class="code-block" style="margin:8px 0"><div class="code-header"><span>C# — Lambda Event Handlers</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre class="code-pre">btnRefresh.Click += (s, e) =&gt; <span class="fn">RefreshOffsets</span>();
+btnSave.Click += (s, e) =&gt; {
+    config.<span class="fn">Save</span>(<span class="str">"config.json"</span>);
+    MessageBox.<span class="fn">Show</span>(<span class="str">"Config saved!"</span>);
+};</pre></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-box">
+      <h4>📋 Key Takeaways — Step 1</h4>
+      <ul>
+        <li>UI is optional but recommended for usability and professionalism</li>
+        <li><strong>C++/Qt:</strong> Use Signals & Slots to wire UI → code. Methods: Designer, manual connect(), lambdas</li>
+        <li><strong>C#/WinForms:</strong> Use Event Handlers. Methods: Double-click, Properties Events tab, manual +=, lambdas</li>
+        <li><strong>C#/Spectre.Console:</strong> Use SelectionPrompt and TextPrompt for TUI interactivity</li>
+        <li>Separate UI logic from business logic (MVVM/MVC pattern)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- STEP 2: Auth -->
+  <div class="step-content" id="step2">
+    <h2 style="font-size:1.5rem;margin-bottom:8px">Step 2: Authentication & User Management</h2>
+    <p style="color:var(--text2);margin-bottom:8px;font-size:.92rem">Extend your panel UI with secure authentication. Two approaches: <strong>Keyauth.cc</strong> (ready-to-use) or <strong>Self-hosted Node.js</strong> (full control).</p>
+    <div class="note-box info" style="margin-bottom:24px"><span class="ni">💡</span><div><strong>My take:</strong> Auth doesn't matter as much as real functions. I care about features, not frontend auth. But if you want it, here's how.</div></div>
+    <div class="summary-box">
+      <h4>📋 Key Takeaways — Step 2</h4>
+      <ul>
+        <li>Two auth options: Keyauth (fast, commercial) or Self-hosted Node.js (free, full control)</li>
+        <li>Always use HTTPS, hashed passwords, and token-based sessions</li>
+        <li>Auth is optional for personal tools — focus on features first</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- STEP 3: IL2CPP -->
+  <div class="step-content" id="step3">
+    <h2 style="font-size:1.5rem;margin-bottom:8px">Step 3: Dumping IL2CPP for Free Fire</h2>
+    <p style="color:var(--text2);margin-bottom:8px;font-size:.92rem">Extract IL2CPP binaries and global-metadata.dat using GameGuardian, memory editing, and Il2CppDumper.</p>
+    <div class="note-box danger" style="margin-bottom:24px"><span class="ni">⚠️</span><div><strong>Legal Warning:</strong> Dumping game code may violate the game's Terms of Service. This tutorial is for <strong>educational purposes only</strong>. Use at your own risk.</div></div>
+    <div class="note-box danger" style="margin-top:12px"><span class="ni">🚫</span><div><strong>Don't be a skid:</strong> Don't copy-paste — learn from it. What's presented here is the core foundation, but you have to make your own best version yourself.</div></div>
+    <div class="summary-box">
+      <h4>📋 Key Takeaways — Step 3</h4>
+      <ul>
+        <li>IL2CPP converts C# → C++; dumping recovers the original structure and signatures</li>
+        <li>Free Fire encrypts metadata at rest — must dump at <strong>runtime</strong> after decryption</li>
+        <li>6 sub-steps: bypass anti-tamper → find metadata → dump memory → identify file → dump libil2cpp.so → run Il2CppDumper</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- STEP 4: Coming Soon -->
+  <div class="step-content" id="step4">
+    <div class="coming-soon">
+      <div class="cs-icon">🔒</div>
+      <h2>Step 4: Memory Manipulation</h2>
+      <p>Coming soon — this section will cover reading/writing game memory, offset management, and feature implementation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOADS PAGE -->
+<section class="page" id="page-downloads">
+  <div class="hero" style="padding-top:32px">
+    <h1>File <span>Downloads</span></h1>
+    <p>Essential scripts, DLLs, pre-dumped files, and executables for your development workflow.</p>
+  </div>
+
+  <!-- 1. GameGuardian Scripts -->
+  <div class="section">
+    <h2 class="section-title"><span class="num">1</span> GameGuardian Scripts</h2>
+    <div class="note-box info" style="margin-bottom:20px"><span class="ni">👤</span><div>All scripts listed below can be found on the GameGuardian forums by user <a href="https://gameguardian.net/forum/profile/1129048-lover1500/" target="_blank"><strong>lover1500</strong></a>.</div></div>
+    
+    <div class="grid-2">
+      <div class="card" style="display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <div class="card-header"><div class="card-icon purple">🔍</div><h3>MetadataSearcher Lua</h3></div>
+          <p>Hidden global-metadata.dat searcher script for GameGuardian. Locates the decrypted metadata in memory at runtime.</p>
+          <div style="margin-top:12px;margin-bottom:16px">
+            <span class="badge green">Current: V4 (New)</span>
+            <span class="badge orange" style="margin-left:4px">V3 (Legacy - in changelog)</span>
+          </div>
+        </div>
+        <a href="https://gameguardian.net/forum/files/file/2769-hidden-global-metadatadat-searcher/" target="_blank" class="btn-primary" style="text-align:center">Download MetadataSearcher</a>
+      </div>
+
+      <div class="card" style="display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <div class="card-header"><div class="card-icon green">📦</div><h3>LibIl2cpp Dumper Lua</h3></div>
+          <p>Script for dumping libil2cpp.so and global-metadata.dat from memory. Critical for extracting the IL2CPP binary.</p>
+          <div style="margin-top:12px;margin-bottom:16px">
+            <span class="badge orange">Current: V3</span>
+            <span class="badge green" style="margin-left:4px">V2 (Recommended)</span>
+          </div>
+        </div>
+        <a href="https://gameguardian.net/forum/files/file/2740-libil2cppso-and-metadatadat-dumping-script/" target="_blank" class="btn-primary" style="text-align:center">Download LibIl2cpp Dumper</a>
+      </div>
+
+      <div class="card" style="display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <div class="card-header"><div class="card-icon dark">🏗️</div><h3>Class Name & Field Offset Searcher</h3></div>
+          <p>Searches for class names and their corresponding field offsets in memory. Useful for navigating IL2CPP structures post-dump.</p>
+        </div>
+        <a href="https://gameguardian.net/forum/files/file/2825-class-name-and-field-offset-searcher/" target="_blank" class="btn-primary" style="text-align:center;margin-top:16px">Download Offset Searcher</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. DLLs -->
+  <div class="section">
+    <h2 class="section-title"><span class="num">2</span> DLLs</h2>
+    <div class="placeholder-box">
+      <p style="font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:8px">No DLLs available yet</p>
+      <p>This section will contain dynamic link libraries for injection and hooking. Check back later.</p>
+    </div>
+  </div>
+
+  <!-- 3. Pre Dumped Files -->
+  <div class="section">
+    <h2 class="section-title"><span class="num">3</span> Pre Dumped Files</h2>
+    <div class="placeholder-box">
+      <p style="font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:8px">No pre-dumped files available yet</p>
+      <p>This section will contain dump.cs, script.json, and map.txt files for various game versions. Check back later.</p>
+    </div>
+  </div>
+
+  <!-- 4. Executables -->
+  <div class="section">
+    <h2 class="section-title"><span class="num">4</span> Executables</h2>
+    <div class="placeholder-box">
+      <p style="font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:8px">No executables available yet</p>
+      <p>This section will contain compiled tools, standalone injectors, and modded executables. Check back later.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-disclaimer">
+    <strong>⚠️ Disclaimer:</strong> All content on this website is strictly for educational, reverse engineering, and security research purposes only. Developing, distributing, or using unauthorized modifications violates Garena's Terms of Service and may result in permanent bans, legal action, or account termination. <strong>This website takes no responsibility for any misuse.</strong> Always operate within ethical, legal, and sandboxed research environments.
+  </div>
+</footer>
+
+<script>
+const RESOURCES_DATA = [
+  {
+    name: "Cheat Engine",
+    tags: ["Memory Scanner", "Debugger", "Windows"],
+    bonus: "An old APK also exists for Android users",
+    description: "Open-source memory scanner and debugger for Windows. Features memory scanning with multiple scan types, a debugger, disassembler, assembler, and trainer maker. Essential for finding dynamic memory addresses, pointer scanning, and structure analysis. Supports Lua scripting for automation.",
+    links: [{label: "Website", url: "https://cheatengine.org"}, {label: "APK (Malavida)", url: "https://cheat-engine.en.malavida.com/android/"}]
+  },
+  {
+    name: "GameGuardian",
+    tags: ["Memory Editor", "Android", "Lua"],
+    description: "Powerful Android memory editor and hex editor that works on rooted devices. Allows searching and modifying memory values in running apps/games in real-time. Supports Lua scripting for automated searches, pattern replacement, and memory dumping. The go-to tool for Android game modding.",
+    links: [{label: "Website", url: "https://gameguardian.net"}]
+  },
+  {
+    name: "HxD",
+    tags: ["Hex Editor", "Windows", "Disk Editor"],
+    description: "A carefully designed and fast hex editor which, additionally to raw disk editing and modifying of main memory (RAM), handles files of any size. Excellent for inspecting binary files, comparing dumps, and editing global-metadata.dat or libil2cpp.so directly.",
+    links: [{label: "Website", url: "https://mh-nexus.de/en/hxd/"}]
+  },
+  {
+    name: "IDA Pro",
+    tags: ["Disassembler", "Debugger", "Multi-platform"],
+    description: "The premier disassembler and debugger used by reverse engineers worldwide. Supports a vast array of processors and file formats. Offers deep analysis, decompilation (with Hex-Rays), and scripting capabilities. Industry standard for static analysis of native binaries.",
+    links: [{label: "Website", url: "https://hex-rays.com/ida-pro"}]
+  },
+  {
+    name: "dnSpy",
+    tags: [".NET Debugger", "Decompiler", "C#"],
+    description: "An open-source .NET debugger and assembly editor. Used to decompile, edit, and debug .NET assemblies. Essential for Unity (Mono) game modding and inspecting managed code. Allows on-the-fly C# code editing and recompilation.",
+    links: [{label: "GitHub", url: "https://github.com/dnspy/dnspy"}]
+  },
+  {
+    name: "x64dbg",
+    tags: ["Debugger", "Windows", "x64/x32"],
+    description: "An open-source x64/x32 debugger for Windows. The successor to OllyDbg. Features a modern UI, plugin system, and extensive scripting capabilities. Ideal for dynamic analysis, setting breakpoints, and tracing execution flow in native applications.",
+    links: []
+  },
+  {
+    name: "MSVS",
+    tags: ["IDE", "Compiler", "Windows"],
+    description: "Microsoft Visual Studio. The industry-standard integrated development environment (IDE) for C++, C#, and .NET development. Essential for compiling Windows applications, managing large projects, and utilizing frameworks like Qt or WinForms.",
+    links: [{label: "Website", url: "https://visualstudio.microsoft.com/"}]
+  },
+  {
+    name: "g++/gcc",
+    tags: ["Compiler", "C/C++", "Open Source"],
+    description: "The GNU Compiler Collection. Essential for compiling C and C++ source code into executable binaries. g++ specifically handles C++ compilation. Standard toolchain for system-level programming, DLL creation, and cheat development.",
+    links: [{label: "Website", url: "https://gcc.gnu.org"}]
+  },
+  {
+    name: "MinHook",
+    tags: ["Hooking Library", "C/C++", "Windows API"],
+    description: "A minimalistic Windows API hooking library. Allows intercepting function calls, modifying arguments, and altering return values. Widely used in game modding to redirect game function flows for creating internal overlays and modifying game logic.",
+    links: [{label: "GitHub", url: "https://github.com/TsudaKageyu/minhook"}]
+  },
+  {
+    name: "Process Hacker",
+    tags: ["Process Monitor", "Memory Editor", "Windows"],
+    description: "A free, powerful, multi-purpose tool that helps you monitor system resources, debug software, and detect malware. Provides deep insights into processes, services, network connections, and memory. Great for finding process IDs and managing handles.",
+    links: [{label: "SourceForge", url: "https://sourceforge.net/projects/processhacker/"}]
+  },
+  {
+    name: "GLEW",
+    tags: ["Graphics", "OpenGL", "Library"],
+    description: "The OpenGL Extension Wrangler Library. Efficiently accesses OpenGL extensions. Crucial for developing ESP overlays and rendering hooks that interact with the game's graphics pipeline via OpenGL.",
+    links: [{label: "Website", url: "https://glew.sourceforge.net"}]
+  },
+  {
+    name: "Ghidra",
+    tags: ["Decompiler", "Disassembler", "NSA"],
+    description: "A free, open-source software reverse engineering suite developed by the NSA. Offers high-quality decompilation, collaboration features, and an extensive scripting API (Java/Python). A powerful, free alternative to IDA Pro for analyzing IL2CPP binaries.",
+    links: [{label: "GitHub", url: "https://github.com/nationalsecurityagency/ghidra"}]
+  },
+  {
+    name: "Radare2",
+    tags: ["RE Framework", "CLI", "Multi-platform"],
+    description: "A free, open-source, command-line reverse engineering framework. Extremely modular and scriptable, handling forensics, disassembling, debugging, and binary analysis. Preferred by many for automated binary inspection and patching.",
+    links: [{label: "GitHub", url: "https://github.com/radareorg/radare2"}]
+  },
+  {
+    name: "Binary Ninja",
+    tags: ["RE Platform", "Decompiler", "API"],
+    description: "A modern reverse engineering platform. Known for its clean UI, high-quality intermediate language (IL), and incredibly powerful Python API for automation and analysis. Excellent for collaborative RE workflows.",
+    links: [{label: "Website", url: "https://binary.ninja"}]
+  },
+  {
+    name: "GDB",
+    tags: ["Debugger", "Linux", "CLI"],
+    description: "The GNU Project debugger. Allows seeing what happens inside a program while it executes or what it was doing at the moment it crashed. Essential for Linux-based reverse engineering and memory analysis.",
+    links: [{label: "Website", url: "https://www.gnu.org/software/gdb/gdb.html"}]
+  }
+];
+
+function renderResources() {
+  const grid = document.getElementById('resources-grid');
+  if (!grid) return;
+  grid.innerHTML = RESOURCES_DATA.map((r, i) => `
+    <div class="card resource-card">
+      <div class="rc-num">${String(i+1).padStart(2,'0')}</div>
+      <div>
+        <h3>${r.name}</h3>
+        <p>${r.description}</p>
+        <div>${r.tags.map(t => `<span class="resource-tag">${t}</span>`).join('')}${r.bonus ? `<span class="resource-bonus">⭐ ${r.bonus}</span>` : ''}</div>
+        ${r.links && r.links.length > 0 ? `<div style="margin-top:8px">${r.links.map(l => `<a href="${l.url}" target="_blank" class="resource-link">${l.label} ↗</a>`).join('')}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+document.querySelectorAll('.nav-link').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('page-' + btn.dataset.page);
+    if (target) target.classList.add('active');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  });
+});
+
+document.querySelectorAll('.step-btn:not(.disabled)').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(btn.dataset.step);
+    if (target) target.classList.add('active');
+    const currentLang = document.querySelector('.lang-btn.active')?.dataset.lang || 'cpp';
+    applyLanguage(currentLang);
+  });
+});
+
+function applyLanguage(lang) {
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  document.querySelectorAll('.lang-content').forEach(c => {
+    c.classList.toggle('active', c.dataset.lang === lang);
+  });
+}
+
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    applyLanguage(btn.dataset.lang);
+  });
+});
+
+function toggleAcc(el) {
+  const item = el.parentElement;
+  const wasOpen = item.classList.contains('open');
+  item.parentElement.querySelectorAll('.acc-item').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('.code-pre');
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderResources();
+  applyLanguage('cpp');
+});
+</script>
+</body>
+</html>
