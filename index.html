@@ -1124,8 +1124,8 @@ app.<span class="fn">listen</span>(<span class="num">3000</span>, () =&gt; conso
         <tbody>
           <tr><td><strong>Rooted Android device or emulator</strong></td><td>Memory editing requires root access</td></tr>
           <tr><td><strong>GameGuardian</strong></td><td>Search/replace patterns, dump memory</td></tr>
-          <tr><td><strong>MetadataSearcher Lua script</strong></td><td>Locate global-metadata in memory</td></tr>
-          <tr><td><strong>Lib Dumper Lua script</strong></td><td>Extract libil2cpp.so from memory</td></tr>
+          <tr><td><strong>MetadataSearcher Lua script (V4)</strong></td><td>Locate global-metadata in memory</td></tr>
+          <tr><td><strong>Lib Dumper Lua script (V2)</strong></td><td>Extract libil2cpp.so from memory</td></tr>
           <tr><td><strong>Il2CppDumper</strong> (PC) or <a href="https://il2cppdumper.com" target="_blank">il2cppdumper.com</a></td><td>Generate dump.cs from binary + metadata</td></tr>
           <tr><td><strong>File manager</strong> (e.g., MT-Manager)</td><td>Navigate APK assets and compare file sizes</td></tr>
         </tbody>
@@ -1227,7 +1227,7 @@ app.<span class="fn">listen</span>(<span class="num">3000</span>, () =&gt; conso
 
     <!-- STEP 3.4 -->
     <div class="step-section">
-      <h3>Step 3.4: Identify the Real global-metadata.dat</h3>
+      <h3>Step 3.4: Identify the Real global-metadata.dat (Optional:Only when V3 Metadata script was used)</h3>
       <ol style="padding-left:20px;font-size:.88rem;color:var(--text2);line-height:2">
         <li>Use a file manager with root access to navigate to:<br>
           <code style="font-family:var(--font-mono);font-size:.8rem;background:var(--surface3);padding:4px 10px;border-radius:var(--radius-sm);display:inline-block;margin-top:4px;word-break:break-all">/data/app/com.dts.freefireth-*/base.apk/assets/bin/Data/Managed/Metadata/</code><br>
@@ -1252,7 +1252,7 @@ app.<span class="fn">listen</span>(<span class="num">3000</span>, () =&gt; conso
     </div>
 
     <!-- STEP 3.6 -->
-    <div class="step-section">
+<div class="step-section">
       <h3>Step 3.6: Run Il2CppDumper</h3>
 
       <div class="accordion">
@@ -1268,7 +1268,7 @@ app.<span class="fn">listen</span>(<span class="num">3000</span>, () =&gt; conso
           </div>
         </div>
         <div class="acc-item">
-          <div class="acc-q" onclick="toggleAcc(this)">💻 Option B: Command Line (Windows/Linux) <span class="arrow">▼</span></div>
+          <div class="acc-q" onclick="toggleAcc(this)">💻 Option B: Command Line (Recommended) <span class="arrow">▼</span></div>
           <div class="acc-a">
             <div class="code-block" style="margin:8px 0"><div class="code-header"><span>Bash — Il2CppDumper CLI</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div><pre class="code-pre">Il2CppDumper.exe &lt;libil2cpp.so&gt; &lt;global-metadata.dat&gt; &lt;output_directory&gt;
 
@@ -1278,8 +1278,12 @@ Il2CppDumper.exe libil2cpp.so global-metadata.dat ./dump_output</pre></div>
         </div>
         <div class="acc-item">
           <div class="acc-q" onclick="toggleAcc(this)">🖥️ Option C: GUI Version <span class="arrow">▼</span></div>
-          <div class="acc-a">Download the GUI version of Il2CppDumper and load both files through the graphical interface. Easiest for Windows users who prefer not to use the command line.</div>
+          <div class="acc-a">Run Il2cppdumper.exe and select files manually or download the GUI version of Il2CppDumper and load both files through the graphical interface. Easiest for Windows users who prefer not to use the command line.</div>
         </div>
+      </div>
+
+      <div style="margin-top:16px;padding:12px 16px;background:#FFF9E6;border-left:3px solid #D97706;border-radius:4px;font-size:0.9rem;line-height:1.7;color:#111827">
+        <strong style="color:#D97706">⚠️ Note — Il2CppDumper v2 (Old Version):</strong> If you are using the older v2 release, the program will prompt you to enter a <strong>dump address</strong>. Look at the filename of your dumped <code>libil2cpp.so</code> — it often contains the start address in parentheses. For example, if the file is named <code>(start addr-abcdefg)libil2cpp.so</code>, enter <code>abcdefg</code> as the dump address when prompted.
       </div>
     </div>
 
