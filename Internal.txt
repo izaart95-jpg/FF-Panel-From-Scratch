@@ -1,0 +1,36 @@
+// Bone/Transform nodes (ITransformNode)
+        protected ITransformNode NodeRoot;           // GCMICMFEAKI  
+        protected ITransformNode NodeHips;           // OLCJOGDHJJJ  
+        protected ITransformNode NodeSpine;          // OLJBCONDGLO  
+        protected ITransformNode NodeChest;          // HCLMADAFLPD  
+        protected ITransformNode NodeHead;           // PFHDPLOAENC  
+        protected ITransformNode NodeLeftShoulder;   // CENAIGAFGAG  
+        protected ITransformNode NodeRightShoulder;  // MPJBGDJJJMJ  
+        protected ITransformNode NodeLeftHand;       // JPBJIMCDBHN  
+        protected ITransformNode NodeRightHand;      // BMGCHFGEDDA  
+        protected ITransformNode NodeLeftFoot;       // AGHJLIMNPJA  
+        protected ITransformNode NodeRightFoot;      // FDMBKCKMODA  
+        protected ITransformNode NodeCamera;         // CKABHDJDMAP  
+        protected ITransformNode NodeWeapon;         // KOCDBPLKMBI  
+        protected Transform      NodeWeaponTransform;// EKEIMDDMFDG  
+        protected ITransformNode NodeMuzzle;         // LIBEIIIAGIK  
+        protected ITransformNode NodeAim;            // HDEPJIBNIIK  
+        protected ITransformNode NodeElbow;          // NJDDAPKPILB  
+        protected ITransformNode NodeGrip;           // JHIBMHEMJOL 
+        protected ITransformNode NodeStock;          // JBACCHNMGNJ  
+        protected ITransformNode NodeSight;          // FGECMMJKFNC  
+        protected Collider           m_BodyCollider; // HECFNHJKOMN  
+
+
+// Aim system
+        public AimAssistProcessor   m_AimAssist;           // GINHBFJPFBP  
+        public AimAssistForIceWall  m_AimAssistForIceWall; // DEBPBFOAHKI  
+        private bool   m_IsAimAssistActive;            // MJKMHJJJJGL  
+        private float  m_AimAssistTimer;               // AEDMMIKNECI  
+        private bool   m_IsAimAssistMode1;             // PCLBMKFOOEB  
+        private bool   m_IsAimAssistMode2;             // GOGABLALMMG 
+        private bool   m_IsAimAssistMode3;             // PBBJJHIOFBF  
+        private HashSet<int> m_AimAssistIgnoreSet;     // KGPKDHENIEF  
+        private EAimAssist   m_CurrentAimAssist;       // GNBLLOPNPNG  
+        private AimAssistProcessor  m_AimProc1;        // FFNBBHKEDAE  
+        private AimAssistForIceWall m_AimProc2;        // NLIOCEKCAOF  
